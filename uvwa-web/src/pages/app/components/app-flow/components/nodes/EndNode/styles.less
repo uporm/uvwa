@@ -1,0 +1,59 @@
+// EndNode EditEndAttribute 组件样式
+
+.code {
+  // 变量卡片
+  &Card {
+    width: 100%;
+    box-shadow: none !important;
+  }
+
+  // 包装对象卡片
+  &WrapCard {
+    width: 100%;
+    box-shadow: none !important;
+    
+    :global(.ant-card-head-title) {
+      font-weight: normal;
+    }
+  }
+
+  // 变量列表项
+  &VariableItem {
+    padding: 2px 0 !important;
+  }
+
+  // 变量输入行
+  &InputRow {
+    width: 100%;
+    gap: 8px;
+    align-items: center;
+  }
+
+  // 表单字段
+  &Field {
+    margin-bottom: 0;
+
+    &Name {
+      flex: 1;
+    }
+
+    &Value {
+      flex: 2;
+    }
+  }
+
+  // 空状态提示
+  &EmptyState {
+    padding: 16px 0;
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+  }
+}
+
+.textEditorContainer {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+}

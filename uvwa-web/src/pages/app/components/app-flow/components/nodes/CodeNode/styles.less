@@ -1,0 +1,95 @@
+// CodeNode EditCodeAttribute 组件样式
+
+.code {
+  // 主容器
+  &Container {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  // 变量卡片
+  &Card {
+    width: 100%;
+    box-shadow: none !important;
+  }
+
+  // 变量列表项
+  &VariableItem {
+    padding: 2px 0;
+
+    &Output {
+      padding: 4px 0;
+    }
+  }
+
+  // 变量输入行
+  &InputRow {
+    width: 100%;
+    gap: 8px;
+    align-items: center;
+  }
+
+  // 表单字段
+  &Field {
+    margin-bottom: 0;
+
+    &Name {
+      flex: 1;
+    }
+
+    &Value {
+      flex: 2;
+    }
+
+    &OutputName {
+      flex: 3;
+    }
+
+    &OutputType {
+      flex: 2;
+    }
+
+    &Language {
+      margin-bottom: 0;
+      margin-right: 8px;
+    }
+
+    &Content {
+      margin-bottom: 0;
+    }
+  }
+
+  // 空状态提示
+  &EmptyState {
+    padding: 16px 0;
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+  }
+
+  // 代码编辑器容器
+  &EditorContainer {
+    width: 100%;
+    overflow: hidden;
+    // 边框样式需要通过内联样式设置，因为需要使用 token.colorBorderSecondary 和 token.borderRadius
+  }
+
+  // 语言选择容器
+  &LanguageBox {
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  // 语言选择器
+  &LanguageSelect {
+    width: auto;
+  }
+
+  // 分割线
+  &Divider {
+    margin: 0 0 8px 0;
+  }
+
+  // 删除按钮图标样式将通过内联样式设置，因为需要使用 token.colorPrimary
+}

@@ -1,0 +1,35 @@
+// Tags Modal Module Styles
+.tagInput {
+  font-size: 12px;
+  width: 100px;
+  height: 22px;
+  margin-inline-end: 8px;
+  vertical-align: top;
+}
+
+.tagPlus {
+  height: 22px;
+  border-style: dashed;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #1890ff;
+    color: #1890ff;
+  }
+}
+
+.tagItem {
+  user-select: none;
+  
+  .tagContent {
+    cursor: pointer;
+    
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.tagsContainer {
+  row-gap: 8px;
+}

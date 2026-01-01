@@ -1,0 +1,46 @@
+/* ========================================
+   node-wrapper 组件样式
+   ======================================== */
+
+/* 节点包装器主容器 */
+.nodeWrapper {
+  width: 100%;
+  min-width: 150px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* 节点头部区域 */
+.nodeHeader {
+  background-color: white;
+  padding: 3px 5px;
+  min-height: 32px;
+}
+
+/* 节点信息区域（图标 + 标题） */
+.nodeInfo {
+  flex: 1;
+  min-width: 0; /* 允许文本截断 */
+}
+
+/* 节点标题 */
+.nodeTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.88);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 节点操作按钮容器 */
+.nodeActions {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  flex-shrink: 0;
+}
+
+/* 悬停时显示操作按钮 */
+.nodeWrapper:hover .nodeActions {
+  opacity: 1;
+}

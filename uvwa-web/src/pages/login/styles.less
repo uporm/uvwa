@@ -1,0 +1,614 @@
+// 清新明亮的色彩方案
+
+.loginContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--color-bg-light) 0%, #ffffff 100%);
+  //font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+// 更清新明亮的渐变背景
+.gradientBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.gradient1 {
+  position: absolute;
+  top: -30%;
+  right: -20%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary), transparent 88%) 0%, transparent 70%);
+  animation: float1 25s ease-in-out infinite;
+  border-radius: 50%;
+}
+
+.gradient2 {
+  position: absolute;
+  bottom: -25%;
+  left: -15%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary), transparent 92%) 0%, transparent 70%);
+  animation: float2 30s ease-in-out infinite;
+  border-radius: 50%;
+}
+
+.gradient3 {
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 30%;
+  height: 30%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary), transparent 94%) 0%, transparent 70%);
+  animation: float3 20s ease-in-out infinite;
+  border-radius: 50%;
+}
+
+.gradient4 {
+  position: absolute;
+  bottom: 30%;
+  right: 25%;
+  width: 25%;
+  height: 25%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary), transparent 96%) 0%, transparent 70%);
+  animation: float4 35s ease-in-out infinite;
+  border-radius: 50%;
+}
+
+@keyframes float1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+  33% { transform: translate(20px, -15px) scale(1.1); opacity: 1; }
+  66% { transform: translate(-10px, 10px) scale(0.9); opacity: 0.6; }
+}
+
+@keyframes float2 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  33% { transform: translate(-15px, 15px) scale(1.2); opacity: 0.8; }
+  66% { transform: translate(15px, -10px) scale(0.8); opacity: 0.4; }
+}
+
+@keyframes float3 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+  50% { transform: translate(10px, -10px) scale(1.1); opacity: 0.7; }
+}
+
+@keyframes float4 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+  50% { transform: translate(-8px, 8px) scale(1.05); opacity: 0.5; }
+}
+
+// 增强的粒子效果 - 更生动的动画
+.particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-primary), transparent 60%) 0%, color-mix(in srgb, var(--color-primary), transparent 90%) 100%);
+  border-radius: 50%;
+  animation: enhancedTwinkle 3s ease-in-out infinite;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--color-primary), transparent 80%);
+}
+
+@keyframes enhancedTwinkle {
+  0%, 100% { 
+    opacity: 0.2; 
+    transform: scale(1) rotate(0deg); 
+    box-shadow: 0 0 8px color-mix(in srgb, var(--color-primary), transparent 80%);
+  }
+  25% { 
+    opacity: 0.6; 
+    transform: scale(1.2) rotate(90deg); 
+    box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary), transparent 60%);
+  }
+  50% { 
+    opacity: 0.8; 
+    transform: scale(1.4) rotate(180deg); 
+    box-shadow: 0 0 16px color-mix(in srgb, var(--color-primary), transparent 40%);
+  }
+  75% { 
+    opacity: 0.5; 
+    transform: scale(1.1) rotate(270deg); 
+    box-shadow: 0 0 10px color-mix(in srgb, var(--color-primary), transparent 70%);
+}
+}
+
+// 更紧凑清新的登录容器
+.loginWrapper {
+  position: relative;
+  z-index: 10;
+  transition: transform 0.1s ease-out;
+  width: 100%;
+  height: 100vh;
+}
+
+.loginBox {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px); // 更轻微的模糊效果
+  border: 1px solid color-mix(in srgb, var(--color-primary), transparent 90%);
+  border-radius: 20px; // 稍小的圆角
+  padding: 40px 32px; // 更紧凑的内边距
+  width: 380px; // 稍小的宽度
+  box-shadow: 
+    0 6px 24px rgba(0, 0, 0, 0.06),
+    0 0 12px color-mix(in srgb, var(--color-primary), transparent 96%);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// 艺术化头部区域
+.header {
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+.brandArt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.logoContainer {
+  position: relative;
+  margin-right: 16px;
+}
+
+.logoRing {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, color-mix(in srgb, var(--color-primary), transparent 80%), color-mix(in srgb, var(--color-primary), transparent 95%));
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  animation: ringPulse 4s ease-in-out infinite;
+}
+
+.logoCore {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), color-mix(in srgb, var(--color-primary), white 15%));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: gentleRotate 20s linear infinite;
+  box-shadow: 
+    0 8px 32px color-mix(in srgb, var(--color-primary), transparent 70%),
+    inset 0 2px 8px rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--color-primary), transparent 60%);
+}
+
+.logoIcon {
+  font-size: 28px;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: gentlePulse 3s ease-in-out infinite;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+}
+
+@keyframes gentleRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ringPulse {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.3; 
+  }
+  50% { 
+    transform: scale(1.1); 
+    opacity: 0.6; 
+  }
+}
+
+@keyframes gentlePulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.title {
+  font-size: 32px; // 更大的字体，突出品牌
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 6px 0;
+  background: linear-gradient(135deg, var(--color-text-primary), color-mix(in srgb, var(--color-primary), transparent 20%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 1px;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary), transparent);
+    border-radius: 1px;
+  }
+}
+
+.subtitle {
+  font-size: 13px; // 稍大的英文字体
+  color: color-mix(in srgb, var(--color-primary), transparent 30%);
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: 2px; // 更大的字母间距
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.loginHint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0 24px 0;
+}
+
+.hintLine {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-primary), transparent 70%), transparent);
+  margin: 0 16px;
+}
+
+.hintText {
+  font-size: 13px;
+  color: color-mix(in srgb, var(--color-primary), transparent 30%);
+  font-weight: 500;
+  letter-spacing: 1px;
+  padding: 0 12px;
+  position: relative;
+  
+  &::before,
+  &::after {
+    content: '◆';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 8px;
+    color: color-mix(in srgb, var(--color-primary), transparent 60%);
+  }
+  
+  &::before {
+    left: 0;
+  }
+  
+  &::after {
+    right: 0;
+  }
+}
+
+// 增强的登录表单样式
+.loginForm {
+  :global {
+    .ant-form-item-explain-error {
+      color: #ff4d4f;
+      font-size: 12px;
+      margin-top: 6px;
+      padding-left: 12px;
+    }
+    
+    // 优化输入框样式 - 解决浏览器自动填充问题
+    .ant-input-affix-wrapper {
+      background: rgba(255, 255, 255, 0.85); // 适中的背景透明度
+      border: 1px solid color-mix(in srgb, var(--color-primary), transparent 70%);
+      border-radius: 12px; // 与配置保持一致
+      padding: 10px 16px; // 增加左右内边距
+      transition: all 0.2s ease-out; // 更快的过渡
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03); // 更淡的阴影
+      
+      // 解决浏览器自动填充背景色问题
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus,
+      &:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.85) inset !important;
+        -webkit-text-fill-color: #2c3e50 !important;
+        caret-color: #2c3e50 !important;
+        background-color: rgba(255, 255, 255, 0.85) !important;
+        background-image: none !important;
+        color: #2c3e50 !important;
+        border-color: color-mix(in srgb, var(--color-primary), transparent 70%) !important;
+      }
+      
+      // 调整图标与输入框的间距
+      .ant-input-prefix {
+        margin-right: 12px; // 增加图标与输入内容的间距
+        margin-left: 4px; // 稍微调整左边距
+      }
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.92);
+        border-color: color-mix(in srgb, var(--color-primary), transparent 60%);
+        box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary), transparent 90%);
+      }
+      
+      &:focus-within {
+        background: rgba(255, 255, 255, 0.95);
+        border-color: var(--color-primary);
+        box-shadow: 
+          0 0 0 2px color-mix(in srgb, var(--color-primary), transparent 85%),
+          0 4px 12px color-mix(in srgb, var(--color-primary), transparent 88%);
+      }
+    }
+    
+    .ant-input {
+      background: transparent;
+      border: none;
+      color: var(--color-text-primary);
+      font-size: 15px;
+      font-weight: 500;
+      
+      // 解决浏览器自动填充背景色问题
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus,
+      &:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.85) inset !important;
+        -webkit-text-fill-color: #2c3e50 !important;
+        caret-color: #2c3e50 !important;
+        background-color: rgba(255, 255, 255, 0.85) !important;
+        background-image: none !important;
+        color: #2c3e50 !important;
+      }
+      
+      &::placeholder {
+        color: rgba(44, 62, 80, 0.6);
+        font-weight: 400;
+      }
+      
+      &:focus {
+        box-shadow: none;
+      }
+    }
+    
+    // 密码框的眼睛图标样式
+    .ant-input-password-icon {
+      color: rgba(44, 62, 80, 0.4);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+  }
+}
+
+.inputIcon {
+  color: rgba(44, 62, 80, 0.5) !important; // 更协调的图标颜色
+  font-size: 18px !important; // 稍大的图标
+  transition: all 0.3s ease;
+  margin-right: 8px; // 增加图标与输入内容的间距
+  
+  &:hover {
+    color: var(--color-primary) !important;
+    transform: scale(1.1); // 悬停时轻微放大
+  }
+}
+
+// 更简洁的底部链接
+.footer {
+  margin-top: 20px; // 更紧凑的间距
+}
+
+.link {
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.3s ease;
+  
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.divider {
+  color: color-mix(in srgb, var(--color-text-tertiary), transparent 60%);
+  font-size: 13px;
+  margin: 0 12px;
+}
+
+// 更简洁的装饰性元素
+.decorativeElements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.circle1, .circle2 {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--color-primary), transparent 88%);
+}
+
+.circle1 {
+  width: 80px;
+  height: 80px;
+  top: 15%;
+  left: 15%;
+  animation: gentleFloat1 20s ease-in-out infinite;
+}
+
+.circle2 {
+  width: 60px;
+  height: 60px;
+  bottom: 25%;
+  right: 20%;
+  animation: gentleFloat2 25s ease-in-out infinite;
+}
+
+.dot1, .dot2 {
+  position: absolute;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-primary), transparent 85%);
+}
+
+.dot1 {
+  width: 8px;
+  height: 8px;
+  top: 30%;
+  right: 25%;
+  animation: gentleBlink 4s ease-in-out infinite;
+}
+
+.dot2 {
+  width: 6px;
+  height: 6px;
+  bottom: 35%;
+  left: 25%;
+  animation: gentleBlink 6s ease-in-out infinite reverse;
+}
+
+@keyframes gentleFloat1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(15px, -10px); }
+}
+
+@keyframes gentleFloat2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-10px, 15px); }
+}
+
+@keyframes gentleBlink {
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.2); }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .loginBox {
+    width: 90vw;
+    max-width: 340px;
+    padding: 32px 24px;
+  }
+  
+  .brandArt {
+    margin-bottom: 20px;
+  }
+  
+  .logoContainer {
+    margin-right: 12px;
+  }
+  
+  .logoRing {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .logoCore {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .logoIcon {
+    font-size: 24px;
+  }
+  
+  .title {
+    font-size: 24px;
+    letter-spacing: 0.5px;
+    
+    &::after {
+      width: 30px;
+    }
+  }
+  
+  .subtitle {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+  }
+  
+  .loginHint {
+    margin: 16px 0 20px 0;
+  }
+  
+  .hintText {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loginBox {
+    padding: 24px 20px;
+  }
+  
+  .brandArt {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .logoContainer {
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+  
+  .brandText {
+    align-items: center;
+  }
+  
+  .title {
+    font-size: 20px;
+    text-align: center;
+    
+    &::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+  
+  .subtitle {
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  
+  .loginHint {
+    margin: 12px 0 16px 0;
+  }
+}

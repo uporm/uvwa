@@ -1,0 +1,186 @@
+/**
+ * attribute-panel 组件样式
+ * 使用语义化命名和模块化结构
+ */
+
+// 样式变量
+@panel-border-radius: 10px;
+@panel-border-color: #f0f0f0;
+@panel-bg-color: #ffffff;
+@header-bg-color: #fafafa;
+@text-color-primary: #262626;
+@text-color-secondary: #8c8c8c;
+@spacing-xs: 2px;
+@spacing-sm: 8px;
+@spacing-md: 10px;
+@spacing-lg: 16px;
+@header-height: 60px;
+@z-index-maximized: 1000;
+
+// 主容器
+.attributePanel {
+  margin-top: @header-height;
+  height: calc(100vh - @header-height);
+  border: 1px solid @panel-border-color;
+  border-radius: @panel-border-radius;
+  background-color: @panel-bg-color;
+  min-width: 200px;
+
+  // 最大化状态
+  &.maximized {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: @z-index-maximized;
+    margin: 0;
+    border-radius: 0;
+
+    .resizablePanel {
+      width: 100% !important;
+
+      .resizeHandle {
+        display: none !important;
+      }
+
+      > * {
+        width: 100% !important;
+      }
+    }
+  }
+}
+
+// 布局容器
+.panelLayout {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+// 头部区域
+.panelHeader {
+  padding: 0;
+  border-bottom: 1px solid @panel-border-color;
+  background-color: @header-bg-color;
+  border-radius: @panel-border-radius @panel-border-radius 0 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+// 头部标题行
+.headerRow {
+  padding: @spacing-md @spacing-md 0 @spacing-lg;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: @spacing-xs;
+}
+
+// 标题区域
+.titleSection {
+  flex: 1;
+  font-weight: 500;
+  font-size: 14px;
+  color: @text-color-primary;
+  display: flex;
+  align-items: center;
+  gap: @spacing-sm;
+}
+
+// 内容区域
+.panelContent {
+  flex: 1;
+  padding: @spacing-lg;
+  overflow-y: auto;
+  background-color: @panel-bg-color;
+  border-radius: 0 0 @panel-border-radius @panel-border-radius;
+}
+
+// 标题输入容器
+.titleInputContainer {
+  display: flex;
+  align-items: center;
+  gap: @spacing-xs;
+  margin-bottom: 0;
+}
+
+// 标题输入框
+.titleInput {
+  font-weight: 500;
+  font-size: 16px;
+  padding-left: 3px;
+
+  &.ant-input-borderless {
+    padding: 0 !important;
+
+    &:focus {
+      box-shadow: none;
+    }
+
+    input {
+      padding: 0 !important;
+    }
+  }
+}
+
+// 描述输入容器
+.descriptionInputContainer {
+
+  margin-left: 5px;
+  margin-bottom: 0;
+}
+
+// 描述输入框
+.descriptionInput {
+  font-size: 12px;
+  color: @text-color-secondary;
+
+  &.ant-input-borderless {
+    padding: 0;
+
+    &:focus {
+      box-shadow: none;
+    }
+  }
+}
+
+// 工具栏按钮
+.toolbarButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+// 图标样式
+.panelIcon {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .attributePanel {
+    min-width: 100%;
+    margin-top: 0;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .panelHeader {
+    border-radius: 0;
+  }
+
+  .panelContent {
+    border-radius: 0;
+  }
+}

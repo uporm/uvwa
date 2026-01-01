@@ -1,0 +1,191 @@
+// 主布局容器样式 - 采用更协调的配色方案
+.layoutContainer {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); // 清新的浅灰渐变背景
+  height: 100vh;
+}
+
+// 布局头部容器样式 - 简洁现代设计
+.layoutHeaderContainer {
+  background-color: rgba(255, 255, 255, 0.95); // 半透明白色背景
+  padding: 0;
+  height: auto;
+  line-height: normal;
+  backdrop-filter: blur(10px); // 毛玻璃效果
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6); // 柔和的分隔线
+}
+
+// 布局内容容器样式
+.layoutContentContainer {
+  overflow-y: auto;
+}
+
+// 应用头部区域样式 - 现代简洁设计
+.header {
+  width: 100%;
+  height: 56px; // 更紧凑的高度，更现代
+  padding: 0 20px; // 标准内边距
+  background: transparent; // 透明背景
+}
+
+// 应用Logo区域样式 - 简洁优雅设计
+.logoArea {
+  flex: 1;
+  width: 200px;
+  align-items: center;
+  gap: 8px; // 标准间距
+
+  .logoContainer {
+    width: 28px; // 精致的小尺寸
+    height: 28px;
+    border-radius: 6px; // 小圆角，更简洁
+    background: #34AFBE; // 纯色背景，更专业
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0;
+    box-shadow: none; // 无阴影，更简洁
+  }
+
+  .logoIcon {
+    font-size: 14px; // 适中的图标大小
+    color: white;
+    font-weight: normal; // 标准字重
+  }
+
+  .brandTitle {
+    font-size: 16px; // 标准字体大小
+    font-weight: 600;
+    color: #2d3748; // 深灰色，更柔和
+    margin: 0;
+    letter-spacing: normal; // 标准字间距
+  }
+}
+
+// 页面切换组件样式 - 紧凑专业设计
+.pageSegmented {
+  width: 200px; // 减小宽度
+  background-color: transparent; // 透明背景
+  border-radius: 8px; // 标准圆角
+  
+  :global(.ant-segmented-item) {
+    border-radius: 6px; // 标准圆角
+    transition: all 0.2s ease; // 快速过渡
+    color: #6b7785; // 中性灰色文字
+    font-size: 14px; // 标准字体大小
+    
+    &:hover {
+      color: #34AFBE; // 悬停时主题色
+      background-color: rgba(52, 175, 190, 0.08); // 微妙的悬停效果
+    }
+  }
+  
+  :global(.ant-segmented-item-selected) {
+    background-color: rgba(52, 175, 190, 0.15); // 微妙的选中背景
+    color: #34AFBE; // 选中项主题色
+    font-weight: 500;
+    box-shadow: none; // 去除阴影，更简洁
+  }
+}
+
+// 用户操作区域样式 - 简洁专业
+.userOperationArea {
+  flex: 1;
+  
+  span {
+    color: #4a5568; // 标准深灰色文字
+    font-weight: normal; // 标准字重
+    margin-left: 6px; // 紧凑间距
+  }
+  
+  :global(.ant-avatar) {
+    border: none; // 去除边框，更简洁
+  }
+  
+  :global(.ant-divider-vertical) {
+    border-color: #e2e8f0; // 标准divider颜色
+    height: 20px; // 更紧凑的高度
+    margin: 0 12px; // 紧凑间距
+  }
+}
+
+// workspace 样式 - 简洁优雅设计
+.workspace {
+  width: auto;
+}
+
+.workspace :global(.ant-select-selector) {
+  background-color: transparent !important; // 透明背景
+  border: none !important; // 无边框
+  border-radius: 6px !important; // 小圆角
+  box-shadow: none !important;
+  transition: background-color 0.2s ease; // 只过渡背景色
+}
+
+.workspace :global(.ant-select-selector):hover {
+  background-color: rgba(240, 245, 247, 0.5) !important; // 悬停时微妙的浅灰背景
+  border: none !important; // 保持无边框
+  box-shadow: none !important; // 无阴影
+}
+
+.workspace :global(.ant-select-selector):focus,
+.workspace :global(.ant-select-focused) :global(.ant-select-selector) {
+  background-color: rgba(255, 255, 255, 0.8) !important; // 聚焦时半透明白色
+  border: none !important;
+  box-shadow: 0 0 0 2px rgba(52, 175, 190, 0.3) !important; // 聚焦时微妙的光环
+  outline: none !important;
+}
+
+// Header logo 动画关键帧
+@keyframes headerRingPulse {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.3; 
+  }
+  50% { 
+    transform: scale(1.1); 
+    opacity: 0.6; 
+  }
+}
+
+@keyframes headerGentleRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes headerGentlePulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+.workspace :global(.ant-select-selector) {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.workspace :global(.ant-select-selector):hover {
+  background-color: #e3e3e3 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.workspace :global(.ant-select-selector):focus {
+  background-color: #e3e3e3 !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.workspace :global(.ant-select-focused) :global(.ant-select-selector) {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+// 页面容器样式 - 紧凑设计，减少留白
+.pageContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 16px; // 减少内边距，更紧凑
+}

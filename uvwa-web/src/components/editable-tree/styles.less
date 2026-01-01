@@ -1,0 +1,51 @@
+.editableTree {
+  // 让标题与图标对齐
+  :global(.ant-tree-node-content-wrapper) {
+    display: inline-flex;
+    align-items: center;
+    padding-left: 0;
+    //gap: 2px;
+  }
+
+  // 缩小展开箭头与节点图标之间的间距
+  :global(.ant-tree-switcher) {
+    //width: 16px;
+    margin-right: 1px;
+  }
+
+  // 确保拖拽插入指示线不被节点样式覆盖
+  :global(.ant-tree) {
+    position: relative;
+  }
+  :global(.ant-tree-treenode) {
+    overflow: visible;
+  }
+  :global(.ant-tree-drop-indicator) {
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  // 拖拽中的节点降低不透明度，突出插入位置指示线
+  :global(.ant-tree-treenode.dragging),
+  :global(.ant-tree-treenode.ant-tree-treenode-dragging),
+  :global(.ant-tree-node-content-wrapper.dragging) {
+    opacity: 0.7;
+  }
+
+  // 拖拽视觉强化：背景高亮与内阴影边框
+  :global(.ant-tree-treenode.dragging),
+  :global(.ant-tree-treenode.ant-tree-treenode-dragging),
+  :global(.ant-tree-node-content-wrapper.dragging) {
+    background-color: rgba(24, 144, 255, 0.08);
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px rgba(24, 144, 255, 0.2) inset;
+  }
+
+  // 拖拽悬停目标的轻微高亮（覆盖/缝隙上/缝隙下）
+  :global(.ant-tree-node-content-wrapper.drag-over),
+  :global(.ant-tree-node-content-wrapper.drag-over-gap-top),
+  :global(.ant-tree-node-content-wrapper.drag-over-gap-bottom) {
+    background-color: rgba(24, 144, 255, 0.06);
+    border-radius: 4px;
+  }
+}

@@ -6,8 +6,8 @@ use validator::Validate;
 #[derive(Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct SignUpReq {
-    #[validate(required)]
-    pub email: Option<String>,
+    #[validate(email)]
+    pub email: String,
 }
 
 #[derive(Deserialize, Validate)]

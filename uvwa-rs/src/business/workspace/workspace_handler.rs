@@ -1,7 +1,10 @@
+use crate::business::cache::workspace_cache;
 use crate::business::workspace::workspace_dao::{Workspace, WorkspaceDao};
 use crate::models::context::Context;
 use crate::models::workspace::{WorkspaceReq, WorkspaceResp};
 use crate::r;
+use crate::web::code::Code;
+use crate::web::error::WebError;
 use crate::web::extract::Json;
 use crate::web::r::R;
 use axum::extract::Path;
@@ -18,26 +21,37 @@ pub async fn list_workspaces(ctx: Context) -> R<Vec<WorkspaceResp>> {
 
 // 创建工作空间
 pub async fn create_workspace(ctx: Context, Json(req): Json<WorkspaceReq>) -> R<()> {
-    let max_key = r!(WorkspaceDao::get_max_key(ctx.tenant_id).await);
-    let next_key = max_key.map(|key| key + 1).unwrap_or(0);
-    let workspace = Workspace::new(ctx.tenant_id, next_key, req.name, req.description);
-    r!(WorkspaceDao::insert(workspace).await);
+    let workspace = Workspace::new(ctx.tenant_id)
+        .name(req.name)
+        .description(req.description);
+    r!(WorkspaceDao::insert(&workspace).await);
     R::void()
 }
 
 // 更新工作空间
 pub async fn update_workspace(
     ctx: Context,
-    Path(key): Path<i32>,
+    Path(id): Path<u64>,
     Json(req): Json<WorkspaceReq>,
 ) -> R<()> {
-    let workspace = Workspace::new(ctx.tenant_id, key, req.name, req.description);
+    let workspace = Workspace::from(ctx.tenant_id, id)
+        .name(req.name)
+        .description(req.description);
     r!(WorkspaceDao::update(workspace).await);
     R::void()
 }
 
 // 删除工作空间
-pub async fn delete_workspace(ctx: Context, Path(key): Path<i32>) -> R<()> {
-    r!(WorkspaceDao::delete(ctx.tenant_id, key).await);
+pub async fn delete_workspace(ctx: Context, Path(id): Path<u64>) -> R<()> {
+    if ctx.workspace_id == id {
+        return R::err(WebError::Biz(Code::WorkspaceCurrentCannotDelete.into()));
+    }
+    r!(WorkspaceDao::delete(ctx.tenant_id, id).await);
+    R::void()
+}
+
+// 切换工作空间
+pub async fn switch_workspace(ctx: Context, Path(id): Path<u64>) -> R<()> {
+    workspace_cache::switch_workspace(ctx.tenant_id, id).await;
     R::void()
 }

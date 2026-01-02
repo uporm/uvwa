@@ -1,13 +1,9 @@
 use crate::utils::id::Id;
-use crate::web::ts_str::to_str;
-use serde::Serialize;
 use uorm::error::DbError;
 use uorm::{sql, Param};
 
-#[derive(Debug, Param, Serialize)]
-#[serde(rename_all = "camelCase")]
+#[derive(Param)]
 pub struct User {
-    #[serde(serialize_with = "to_str")]
     pub id: u64,
     pub tenant_id: u64,
     pub name: String,

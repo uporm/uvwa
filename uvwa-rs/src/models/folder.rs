@@ -8,9 +8,9 @@ use validator::Validate;
 #[serde(rename_all = "camelCase")]
 pub struct FolderResp {
     #[serde(serialize_with = "to_str")]
-    pub id: i32,
+    pub id: u64,
     #[serde(serialize_with = "to_str")]
-    pub parent_id: i32,
+    pub parent_id: u64,
     pub name: String,
     pub description: Option<String>,
     pub seq: i32,
@@ -34,7 +34,7 @@ impl From<Folder> for FolderResp {
 #[serde(rename_all = "camelCase")]
 pub struct CreateFolderReq {
     #[serde(deserialize_with = "to_number")]
-    pub parent_id: i32,
+    pub parent_id: u64,
     #[validate(length(min = 1))]
     pub name: String,
     pub description: Option<String>,
@@ -52,6 +52,6 @@ pub struct UpdateFolderReq {
 #[serde(rename_all = "camelCase")]
 pub struct MoveFolderReq {
     #[serde(deserialize_with = "to_number")]
-    pub parent_id: i32,
+    pub parent_id: u64,
     pub seq: i32,
 }

@@ -1,21 +1,41 @@
+use crate::utils::id::Id;
 use uorm::{Param, sql};
 
-#[derive(Param)]
+#[derive(Param, Clone)]
 pub struct Workspace {
     pub tenant_id: u64,
-    pub key: i32,
+    pub id: u64,
     pub name: String,
     pub description: Option<String>,
 }
 
 impl Workspace {
-    pub fn new(tenant_id: u64, key: i32, name: String, description: Option<String>) -> Self {
+    pub fn new(tenant_id: u64) -> Self {
         Workspace {
             tenant_id,
-            key,
-            name,
-            description,
+            id: Id::next_id().unwrap_or_default(),
+            name: "默认工作空间".to_string(),
+            description: Some("默认工作空间".to_string()),
         }
+    }
+
+    pub fn from(tenant_id: u64, id: u64) -> Self {
+        Workspace {
+            tenant_id,
+            id,
+            name: "".to_string(),
+            description: None,
+        }
+    }
+
+    pub fn name(mut self, name: String) -> Self {
+        self.name = name;
+        self
+    }
+
+    pub fn description(mut self, description: Option<String>) -> Self {
+        self.description = description;
+        self
     }
 }
 
@@ -24,7 +44,7 @@ pub struct WorkspaceDao;
 
 impl WorkspaceDao {
     #[sql("insert")]
-    pub async fn insert(workspace: Workspace) -> uorm::Result<()> {
+    pub async fn insert(workspace: &Workspace) -> uorm::Result<()> {
         exec!()
     }
 
@@ -34,17 +54,12 @@ impl WorkspaceDao {
     }
 
     #[sql("delete")]
-    pub async fn delete(tenant_id: u64, key: i32) -> uorm::Result<()> {
+    pub async fn delete(tenant_id: u64, id: u64) -> uorm::Result<()> {
         exec!()
     }
 
     #[sql("list")]
     pub async fn list(tenant_id: u64) -> uorm::Result<Vec<Workspace>> {
-        exec!()
-    }
-
-    #[sql("getMaxKey")]
-    pub async fn get_max_key(tenant_id: u64) -> uorm::Result<Option<i32>> {
         exec!()
     }
 }

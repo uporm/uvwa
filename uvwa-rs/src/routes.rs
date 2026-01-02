@@ -1,4 +1,5 @@
 use crate::business::folder::folder_handler;
+use crate::business::tag::tag_handler;
 use crate::business::user::user_handler;
 use crate::business::workspace::workspace_handler;
 use crate::web::middleware::auth::handle_auth;
@@ -9,13 +10,14 @@ use axum::Router;
 pub fn router() -> Router {
     // 公开路由
     let public_routes = Router::new()
-        .nest("/nowa/users", public_user_routes());
+        .nest("/uvwa", public_user_routes());
 
     // 受保护路由
     let protected_routes = Router::new()
-        .nest("/nowa", user_routes())
-        .nest("/nowa", workspace_routes())
-        .nest("/nowa", folder_routes())
+        .nest("/uvwa", user_routes())
+        .nest("/uvwa", workspace_routes())
+        .nest("/uvwa", folder_routes())
+        .nest("/uvwa", tag_routes())
         .layer(middleware::from_fn(handle_auth));
 
     Router::new()
@@ -52,4 +54,13 @@ fn folder_routes() -> Router {
         .route("/folders/{type}/{id}", put(folder_handler::update_folder))
         .route("/folders/{type}/{id}", delete(folder_handler::delete_folder))
         .route("/folders/{type}/{id}/move", put(folder_handler::move_folder))
+}
+
+// Tag routes
+fn tag_routes() -> Router {
+    Router::new()
+        .route("/tags/{type}", get(tag_handler::list_tags))
+        .route("/tags/{type}", post(tag_handler::create_tag))
+        .route("/tags/{type}/{id}", put(tag_handler::update_tag))
+        .route("/tags/{type}/{id}", delete(tag_handler::delete_tag))
 }

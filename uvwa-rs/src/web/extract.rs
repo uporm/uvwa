@@ -29,7 +29,7 @@ where
                 };
 
                 let r: R<()> = R {
-                    code: Code::IllegalParam.as_i32(),
+                    code: Code::IllegalParam.into(),
                     message,
                     data: None,
                 };

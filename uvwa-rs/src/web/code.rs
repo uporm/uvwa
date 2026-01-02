@@ -53,23 +53,35 @@ pub enum Code {
     FolderNotEmpty = 3103,
     // 不能移动文件夹到自身
     FolderMoveToSelf = 3104,
+
+    // 应用相关
+    // 父文件夹不存在
+    AppParentFolderNotExist = 3201,
+    // 应用不存在
+    AppNotExist = 3202,
+    // 应用内容不存在
+    AppContentNotExist = 3203,
+
+    // 工作空间相关
+    // 不能删除当前工作空间
+    WorkspaceCurrentCannotDelete = 3301,
 }
 
-impl Code {
-    pub fn as_i32(&self) -> i32 {
-        *self as i32
+impl From<Code> for i32 {
+    fn from(code: Code) -> Self {
+        code as i32
     }
 }
 
 impl std::fmt::Display for Code {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.as_i32())
+        write!(f, "{}", self)
     }
 }
 
 #[test]
 fn test_code() {
-    assert_eq!(Code::Ok.as_i32(), 200);
+    assert_eq!(Code::Ok as i32, 200);
     assert_eq!(Code::Ok.to_string(), "200");
     assert_eq!(format!("{}", Code::InternalServerError), "500");
 }

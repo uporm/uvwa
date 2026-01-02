@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//uporm.github.io//DTD Mapper 1//EN" "https://uporm.github.io/dtd/uorm-1-mapper.dtd">
+<mapper namespace="tag">
+
+    <sql id="cols">
+        id, tenant_id, workspace_id, type, name, create_time, update_time
+    </sql>
+
+    <select id="list">
+        select
+        <include refid="cols"/>
+        from workspace_tag
+        where tenant_id = #{tenantId}
+        and workspace_id = #{workspaceId}
+        and type = #{type}
+    </select>
+
+    <insert id="insert">
+        insert into workspace_tag (id, tenant_id, workspace_id, type, name, create_time, update_time)
+        values (#{id}, #{tenantId}, #{workspaceId}, #{type}, #{name}, now(), now())
+    </insert>
+
+    <update id="update">
+        update workspace_tag
+        set name = #{name},
+            update_time = now()
+        where id = #{id}
+          and tenant_id = #{tenantId}
+          and workspace_id = #{workspaceId}
+          and type = #{type}
+    </update>
+
+    <delete id="delete">
+        delete
+        from workspace_tag
+        where id = #{id}
+          and tenant_id = #{tenantId}
+          and workspace_id = #{workspaceId}
+          and type = #{type}
+    </delete>
+</mapper>

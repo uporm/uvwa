@@ -4,62 +4,42 @@
 
     <!-- 目录表字段 -->
     <sql id="cols">
-        id, tenant_id, workspace_key, workspace_key, parent_id, type, name, seq, description, create_time, update_time
+        id, tenant_id, workspace_id, parent_id, type, name, seq, description, create_time, update_time
     </sql>
 
-    <!--
-        查询指定租户和工作空间下的所有目录
-        按照序列号升序排列
-    -->
     <select id="list">
         select
         <include refid="cols"/>
         from workspace_folder
         where tenant_id = #{tenantId}
-        and workspace_key = #{workspaceKey}
-        and `type` = #{type_}
+        and workspace_id = #{workspaceId}
+        and `type` = #{type}
         order by seq asc
     </select>
 
-    <!--
-        判断指定目录是否有子节点
-        通过统计指定父目录ID下的记录数来判断是否存在子节点
-    -->
     <select id="countChildren">
         select count(*)
         from workspace_folder
         where tenant_id = #{tenantId}
-        and workspace_key = #{workspaceKey}
+        and workspace_id = #{workspaceId}
         and parent_id = #{parentId}
     </select>
 
-    <!--
-        根据ID获取目录信息
-        通过目录ID、租户ID和工作空间ID精确查找目录
-    -->
     <select id="getById">
         select
         <include refid="cols"/>
         from workspace_folder
         where id = #{id}
         and tenant_id = #{tenantId}
-        and workspace_key = #{workspaceKey}
+        and workspace_id = #{workspaceId}
     </select>
 
-    <!--
-        插入新的目录记录
-        创建新目录时使用，会自动设置创建时间和更新时间
-    -->
     <insert id="insert" useGeneratedKeys="true" keyColumn="id">
-        insert into workspace_folder (tenant_id, workspace_key, parent_id, type, name, seq, description, create_time,
+        insert into workspace_folder (tenant_id, workspace_id, parent_id, type, name, seq, description, create_time,
         update_time)
-        values (#{tenantId}, #{workspaceKey}, #{parentId}, #{type_}, #{name}, #{seq}, #{description}, now(), now())
+        values (#{tenantId}, #{workspaceId}, #{parentId}, #{type}, #{name}, #{seq}, #{description}, now(), now())
     </insert>
 
-    <!--
-        更新目录信息
-        更新目录名称、描述，并更新更新时间
-    -->
     <update id="update">
         update workspace_folder
         set name = #{name},
@@ -67,30 +47,22 @@
         update_time = now()
         where id = #{id}
         and tenant_id = #{tenantId}
-        and workspace_key = #{workspaceKey}
+        and workspace_id = #{workspaceId}
     </update>
 
-    <!--
-        删除指定的目录
-        根据目录ID、租户ID和工作空间ID删除指定目录
-    -->
     <delete id="delete">
         delete
         from workspace_folder
         where id = #{id}
         and tenant_id = #{tenantId}
-        and workspace_key = #{workspaceKey}
+        and workspace_id = #{workspaceId}
     </delete>
 
-    <!--
-        获取指定父目录下的最大序列号
-        用于在父目录下插入新目录时，默认将其放到末尾位置
-    -->
     <select id="getMaxSeq">
         select coalesce(max(seq), 0)
         from workspace_folder
         where tenant_id = #{tenantId}
-        and workspace_key = #{workspaceKey}
+        and workspace_id = #{workspaceId}
         and parent_id = #{parentId}
     </select>
 
@@ -103,7 +75,7 @@
         set seq = seq + 1,
         update_time = now()
         where tenant_id = #{tenantId}
-        and workspace_key = #{workspaceKey}
+        and workspace_id = #{workspaceId}
         and parent_id = #{parentId}
         and seq >= #{fromSeq}
     </update>
@@ -117,7 +89,7 @@
         set seq = seq - 1,
         update_time = now()
         where tenant_id = #{tenantId}
-        and workspace_key = #{workspaceKey}
+        and workspace_id = #{workspaceId}
         and parent_id = #{parentId}
         and seq > #{fromSeq}
     </update>
@@ -132,7 +104,7 @@
         seq = #{seq},
         update_time = now()
         where tenant_id = #{tenantId}
-        and workspace_key = #{workspaceKey}
+        and workspace_id = #{workspaceId}
         and id = #{id}
     </update>
 </mapper>

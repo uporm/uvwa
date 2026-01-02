@@ -22,3 +22,6 @@
 3102 = "Folder does not exist"
 3103 = "Folder is not empty"
 3104 = "Cannot move folder to itself or its subfolders"
+
+### Workspace
+3301 = "Cannot delete current workspace, Please switch to another workspace first."

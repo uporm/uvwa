@@ -1,3 +1,4 @@
+use crate::web::ts_str::to_str;
 use crate::business::workspace::workspace_dao::Workspace;
 use serde::{Deserialize, Serialize};
 
@@ -11,7 +12,8 @@ pub struct WorkspaceReq {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WorkspaceResp {
-    pub key: i32,
+    #[serde(serialize_with = "to_str")]
+    pub id: u64,
     pub name: String,
     pub description: Option<String>,
 }
@@ -19,7 +21,7 @@ pub struct WorkspaceResp {
 impl From<Workspace> for WorkspaceResp {
     fn from(workspace: Workspace) -> Self {
         Self {
-            key: workspace.key,
+            id: workspace.id,
             name: workspace.name,
             description: workspace.description,
         }

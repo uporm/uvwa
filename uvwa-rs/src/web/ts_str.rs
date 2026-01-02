@@ -19,3 +19,21 @@ where
     let s = String::deserialize(d)?;
     s.parse::<T>().map_err(serde::de::Error::custom)
 }
+
+pub fn vec_to_str<T, S>(x: &Option<Vec<T>>, s: S) -> Result<S::Ok, S::Error>
+where
+    T: Display,
+    S: Serializer,
+{
+    match x {
+        Some(v) => {
+            use serde::ser::SerializeSeq;
+            let mut seq = s.serialize_seq(Some(v.len()))?;
+            for element in v {
+                seq.serialize_element(&element.to_string())?;
+            }
+            seq.end()
+        }
+        None => s.serialize_none(),
+    }
+}

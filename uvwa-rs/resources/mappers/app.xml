@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//uporm.github.io//DTD Mapper 1//EN" "https://uporm.github.io/dtd/uorm-1-mapper.dtd">
+<mapper namespace="app">
+
+    <sql id="cols">
+        id, tenant_id, workspace_id, folder_id, type, name, description, create_time, update_time
+    </sql>
+
+    <!-- 
+        查询应用列表
+        支持按folder_id和name过滤
+        关联app_tag表获取标签ID列表（逗号分隔）
+    -->
+    <select id="list">
+        select
+        a.id, a.tenant_id, a.workspace_id, a.folder_id, a.type, a.name, a.description, a.create_time, a.update_time,
+        (
+            SELECT GROUP_CONCAT(at.tag_id) 
+            FROM app_tag at 
+            WHERE at.app_id = a.id 
+            AND at.tenant_id = a.tenant_id 
+            AND at.workspace_id = a.workspace_id
+        ) as tag_ids_str
+        from app a
+        where a.tenant_id = #{tenantId}
+        and a.workspace_id = #{workspaceId}
+        <if test="query.folderId != null">
+            and a.folder_id = #{query.folderId}
+        </if>
+        <if test="query.name != null and query.name != ''">
+            and a.name like concat('%', #{query.name}, '%')
+        </if>
+        order by a.create_time desc
+    </select>
+
+    <select id="getById">
+        select
+        a.id, a.tenant_id, a.workspace_id, a.folder_id, a.type, a.name, a.description, a.create_time, a.update_time,
+        (
+            SELECT GROUP_CONCAT(at.tag_id) 
+            FROM app_tag at 
+            WHERE at.app_id = a.id 
+            AND at.tenant_id = a.tenant_id 
+            AND at.workspace_id = a.workspace_id
+        ) as tag_ids_str
+        from app a
+        where a.id = #{id}
+        and a.tenant_id = #{tenantId}
+        and a.workspace_id = #{workspaceId}
+    </select>
+
+    <insert id="insert">
+        insert into app (id, tenant_id, workspace_id, folder_id, type, name, description, create_time, update_time)
+        values (#{app.id}, #{app.tenantId}, #{app.workspaceId}, #{app.folderId}, #{app.type}, #{app.name}, #{app.description}, now(), now())
+    </insert>
+
+    <update id="update">
+        update app
+        set name = #{app.name},
+        description = #{app.description},
+        update_time = now()
+        where id = #{app.id}
+        and tenant_id = #{app.tenantId}
+        and workspace_id = #{app.workspaceId}
+    </update>
+
+    <delete id="delete">
+        delete from app
+        where id = #{id}
+        and tenant_id = #{tenantId}
+        and workspace_id = #{workspaceId}
+    </delete>
+
+    <delete id="deleteByFolderId">
+        delete from app
+        where folder_id = #{folderId}
+        and tenant_id = #{tenantId}
+        and workspace_id = #{workspaceId}
+    </delete>
+
+    <insert id="batchInsertAppTags">
+        insert into app_tag (tenant_id, workspace_id, app_id, tag_id)
+        values
+        <foreach item="tagId" collection="tagIds" separator=",">
+            (#{tenantId}, #{workspaceId}, #{appId}, #{tagId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteAppTag">
+        delete from app_tag
+        where app_id = #{appId}
+        and tenant_id = #{tenantId}
+        and workspace_id = #{workspaceId}
+    </delete>
+
+    <delete id="deleteAppTagByTagId">
+        delete from app_tag
+        where tag_id = #{tagId}
+        and tenant_id = #{tenantId}
+        and workspace_id = #{workspaceId}
+    </delete>
+
+    <select id="getContent">
+        select id, tenant_id, workspace_id, app_id, content
+        from app_content
+        where app_id = #{appId}
+        and tenant_id = #{tenantId}
+        and workspace_id = #{workspaceId}
+    </select>
+
+    <insert id="insertOrUpdateContent">
+        insert into app_content (id, tenant_id, workspace_id, app_id, content)
+        values (#{id}, #{tenantId}, #{workspaceId}, #{appId}, #{content})
+        on duplicate key update
+        content = #{content}
+    </insert>
+
+    <delete id="deleteContent">
+        delete from app_content
+        where app_id = #{appId}
+        and tenant_id = #{tenantId}
+        and workspace_id = #{workspaceId}
+    </delete>
+
+    <update id="cancelLatest">
+        update app_release
+        set is_latest = false
+        where app_id = #{appId}
+        and tenant_id = #{tenantId}
+        and workspace_id = #{workspaceId}
+        and is_latest = true
+    </update>
+
+    <insert id="insertRelease">
+        insert into app_release (id, tenant_id, workspace_id, app_id, version, major, minor, patch, pre_release, description, is_latest, create_time)
+        values (#{id}, #{tenantId}, #{workspaceId}, #{appId}, #{version},
+                #{major}, #{minor}, #{patch}, #{preRelease}, #{description}, #{isLatest}, now())
+    </insert>
+
+    <insert id="insertReleaseContent">
+        insert into app_release_content (id, tenant_id, workspace_id, app_release_id, content)
+        values (#{id}, #{tenantId}, #{workspaceId}, #{appReleaseId}, #{content})
+    </insert>
+
+    <delete id="deleteReleases">
+        delete from app_release
+        where app_id = #{appId}
+        and tenant_id = #{tenantId}
+        and workspace_id = #{workspaceId}
+    </delete>
+
+    <delete id="deleteReleaseContent">
+        delete arc
+        from app_release_content arc
+        inner join app_release ar on arc.app_release_id = ar.id
+        where ar.app_id = #{appId}
+        and ar.tenant_id = #{tenantId}
+        and ar.workspace_id = #{workspaceId}
+    </delete>
+</mapper>

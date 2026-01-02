@@ -18,7 +18,7 @@ pub struct R<T: Serialize> {
 
 impl<T: Serialize> R<T> {
     pub fn ok(data: T) -> Self {
-        let code = Code::Ok.as_i32();
+        let code = Code::Ok.into();
         Self {
             code,
             message: translate(code, &vec![]),
@@ -86,14 +86,15 @@ fn map_err(err: WebError) -> (i32, String) {
         WebError::Val(err) => {
             debug!("{:?}", err);
             let msg = format_validation_errors(&err);
-            (Code::IllegalParam.as_i32(), msg)
+            (Code::IllegalParam.into(), msg)
         }
-        WebError::Biz(code, args) => (code, translate(code, &args)),
+        WebError::Biz(code) => (code, translate(code, &vec![])),
+        WebError::BizWithArgs(code, args) => (code, translate(code, &args)),
         _ => {
             error!("{:?}", err);
             (
-                Code::InternalServerError.as_i32(),
-                translate(Code::InternalServerError.as_i32(), &vec![]),
+                Code::InternalServerError.into(),
+                translate(Code::InternalServerError.into(), &vec![]),
             )
         }
     }
@@ -140,7 +141,7 @@ fn format_validation_errors(err: &ValidationErrors) -> String {
         }
     }
     if msgs.is_empty() {
-        translate(Code::IllegalParam.as_i32(), &vec![])
+        translate(Code::IllegalParam.into(), &vec![])
     } else {
         msgs.join("; ")
     }

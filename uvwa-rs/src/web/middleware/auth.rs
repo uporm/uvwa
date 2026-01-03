@@ -9,15 +9,17 @@ use axum::response::{IntoResponse, Response};
 use rust_i18n::t;
 
 /// 认证中间件：从 header 中提取租户 ID、用户 ID、工作空间 ID
-pub async fn handle_auth(mut req: Request, next: Next) -> Result<Response, Response> {
+pub async fn handle_auth(mut req: Request, next: Next) -> Response {
     let context = extract_context(req.headers())
         .await
-        .map_err(|e| e.into_response())?;
+        .map_err(|e| e.into_response());
+    if let Err(e) = context {
+        return e;
+    }
 
     // 将上下文放入请求扩展中供后续处理器使用
-    req.extensions_mut().insert(context);
-
-    Ok(next.run(req).await)
+    req.extensions_mut().insert(context.unwrap());
+    next.run(req).await
 }
 
 /// 从 header 中提取上下文信息

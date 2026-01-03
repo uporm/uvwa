@@ -1,7 +1,7 @@
-use axum::http::{Method, Uri};
-use axum::response::IntoResponse;
 use crate::web::code::Code;
 use crate::web::r::R;
+use axum::http::{Method, Uri};
+use axum::response::IntoResponse;
 
 pub async fn not_found(uri: Uri) -> impl IntoResponse {
     let r: R<()> = R {

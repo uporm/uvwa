@@ -1,36 +1,49 @@
-use crate::models::app::AppQuery;
-use crate::web::ts_str::to_str;
-use serde::Serialize;
+use crate::models::app::AppReq;
 use uorm::{Param, sql};
 
-#[derive(Param, Serialize)]
-#[serde(rename_all = "camelCase")]
+#[derive(Param)]
 pub struct App {
-    #[serde(serialize_with = "to_str")]
     pub id: u64,
     pub tenant_id: u64,
     pub workspace_id: u64,
-    #[serde(serialize_with = "to_str")]
     pub folder_id: u64,
-    pub _type: i32,
+    pub app_type: i32,
     pub name: String,
     pub description: Option<String>,
-    pub tag_ids_str: Option<String>,
 }
 
-#[derive(Param, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct AppContent {
+impl App {
+    pub fn tenant_id(&mut self, tenant_id: u64) -> &mut Self {
+        self.tenant_id = tenant_id;
+        self
+    }
+
+    pub fn workspace_id(&mut self, workspace_id: u64) -> &mut Self {
+        self.workspace_id = workspace_id;
+        self
+    }
+}
+
+#[derive(Param)]
+pub struct AppTag {
     pub id: u64,
     pub tenant_id: u64,
     pub workspace_id: u64,
     pub app_id: u64,
-    pub content: String,
+    pub tag_id: u64,
 }
 
-#[derive(Param, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct AppRelease {
+#[derive(Param)]
+pub struct AppDraft {
+    pub id: u64,
+    pub tenant_id: u64,
+    pub workspace_id: u64,
+    pub app_id: u64,
+    pub spec: String,
+}
+
+#[derive(Param)]
+pub struct AppVersion {
     pub id: u64,
     pub tenant_id: u64,
     pub workspace_id: u64,
@@ -44,28 +57,22 @@ pub struct AppRelease {
     pub is_latest: bool,
 }
 
-#[derive(Param, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct AppReleaseContent {
+#[derive(Param)]
+pub struct AppVersionSpec {
     pub id: u64,
     pub tenant_id: u64,
     pub workspace_id: u64,
     pub app_release_id: u64,
-    pub content: String,
+    pub spec: String,
 }
 
 #[sql("app")]
 pub struct AppDao;
 
 impl AppDao {
-    // #[sql("list")]
-    pub async fn list(
-        tenant_id: u64,
-        workspace_id: u64,
-        query: &AppQuery,
-    ) -> uorm::Result<Vec<App>> {
-        // exec!()
-        Ok(vec![])
+    #[sql("list")]
+    pub async fn list(tenant_id: u64, workspace_id: u64, query: &AppReq) -> uorm::Result<Vec<App>> {
+        exec!()
     }
 
     #[sql("getById")]
@@ -129,26 +136,31 @@ impl AppDao {
         exec!()
     }
 
-    #[sql("getContent")]
-    pub async fn get_content(
+    #[sql("listAppTagsByAppIds")]
+    pub async fn list_app_tags_by_app_ids(
         tenant_id: u64,
         workspace_id: u64,
-        app_id: u64,
-    ) -> uorm::Result<Option<AppContent>> {
+        app_ids: &Vec<u64>,
+    ) -> uorm::Result<Vec<AppTag>> {
         exec!()
     }
 
-    #[sql("insertOrUpdateContent")]
-    pub async fn insert_or_update_content(content: &AppContent) -> uorm::Result<()> {
-        exec!()
-    }
-
-    #[sql("deleteContent")]
-    pub async fn delete_content(
+    #[sql("getDraft")]
+    pub async fn get_draft(
         tenant_id: u64,
         workspace_id: u64,
         app_id: u64,
-    ) -> uorm::Result<()> {
+    ) -> uorm::Result<Option<AppDraft>> {
+        exec!()
+    }
+
+    #[sql("insertOrUpdateDraft")]
+    pub async fn insert_or_update_draft(draft: &AppDraft) -> uorm::Result<()> {
+        exec!()
+    }
+
+    #[sql("deleteDraft")]
+    pub async fn delete_draft(tenant_id: u64, workspace_id: u64, app_id: u64) -> uorm::Result<()> {
         exec!()
     }
 
@@ -157,18 +169,18 @@ impl AppDao {
         exec!()
     }
 
-    #[sql("insertRelease")]
-    pub async fn insert_release(release: &AppRelease) -> uorm::Result<u64> {
+    #[sql("insertVersion")]
+    pub async fn insert_version(version: &AppVersion) -> uorm::Result<u64> {
         exec!()
     }
 
-    #[sql("insertReleaseContent")]
-    pub async fn insert_release_content(content: &AppReleaseContent) -> uorm::Result<u64> {
+    #[sql("insertVersionSpec")]
+    pub async fn insert_version_spec(content: &AppVersionSpec) -> uorm::Result<u64> {
         exec!()
     }
 
-    #[sql("deleteReleases")]
-    pub async fn delete_releases(
+    #[sql("deleteVersions")]
+    pub async fn delete_versions(
         tenant_id: u64,
         workspace_id: u64,
         app_id: u64,
@@ -176,8 +188,8 @@ impl AppDao {
         exec!()
     }
 
-    #[sql("deleteReleaseContent")]
-    pub async fn delete_release_content(
+    #[sql("deleteVersionSpecs")]
+    pub async fn delete_version_spec(
         tenant_id: u64,
         workspace_id: u64,
         app_id: u64,

@@ -22,9 +22,11 @@ where
             Err(rejection) => {
                 let message = match rejection {
                     JsonRejection::JsonDataError(e) => format_serde_error(&e.body_text()),
-                    JsonRejection::MissingJsonContentType(_) => {
-                        t!(Code::MissingHeader.to_string(), field = "Content-Type: application/json").to_string()
-                    }
+                    JsonRejection::MissingJsonContentType(_) => t!(
+                        Code::MissingHeader.to_string(),
+                        field = "Content-Type: application/json"
+                    )
+                    .to_string(),
                     _ => t!(Code::IllegalParam.to_string(), field = "Unknown").to_string(),
                 };
 

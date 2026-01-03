@@ -55,12 +55,9 @@ pub enum Code {
     FolderMoveToSelf = 3104,
 
     // 应用相关
-    // 父文件夹不存在
-    AppParentFolderNotExist = 3201,
-    // 应用不存在
-    AppNotExist = 3202,
-    // 应用内容不存在
-    AppContentNotExist = 3203,
+    AppParentFolderNotExist = 3201, // 所属目录不存在
+    AppNotExist = 3202,             // 应用不存在
+    AppDraftNotExist = 3203,        // 应用草稿不存在
 
     // 工作空间相关
     // 不能删除当前工作空间
@@ -75,7 +72,7 @@ impl From<Code> for i32 {
 
 impl std::fmt::Display for Code {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self)
+        write!(f, "{}", i32::from(*self))
     }
 }
 

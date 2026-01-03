@@ -3,11 +3,11 @@
 <mapper namespace="user">
 
     <sql id="cols">
-        id, tenant_id, name, email, passwd, is_owner as owner, description, create_time, update_time
+        id, tenant_id, name, email, passwd, is_owner as owner, description, create_at, update_at
     </sql>
 
     <insert id="insert">
-        insert into user (id, tenant_id, name, email, passwd, is_owner, description, create_time, update_time)
+        insert into user (id, tenant_id, name, email, passwd, is_owner, description, create_at, update_at)
         values (#{id}, #{tenant_id}, #{name}, #{email}, #{passwd}, #{owner}, #{description}, now(), now())
     </insert>
 

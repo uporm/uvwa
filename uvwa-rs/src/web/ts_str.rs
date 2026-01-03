@@ -1,3 +1,4 @@
+use serde::ser::SerializeSeq;
 use serde::{self, Deserialize, Deserializer, Serializer};
 use std::fmt::Display;
 use std::str::FromStr;
@@ -20,20 +21,26 @@ where
     s.parse::<T>().map_err(serde::de::Error::custom)
 }
 
-pub fn vec_to_str<T, S>(x: &Option<Vec<T>>, s: S) -> Result<S::Ok, S::Error>
+pub fn vec_to_str<T, S>(x: &Vec<T>, s: S) -> Result<S::Ok, S::Error>
 where
     T: Display,
     S: Serializer,
 {
-    match x {
-        Some(v) => {
-            use serde::ser::SerializeSeq;
-            let mut seq = s.serialize_seq(Some(v.len()))?;
-            for element in v {
-                seq.serialize_element(&element.to_string())?;
-            }
-            seq.end()
-        }
-        None => s.serialize_none(),
+    let mut seq = s.serialize_seq(Some(x.len()))?;
+    for element in x {
+        seq.serialize_element(&element.to_string())?;
     }
+    seq.end()
+}
+
+pub fn vec_to_number<'de, T, D>(d: D) -> Result<Vec<T>, D::Error>
+where
+    T: FromStr,
+    T::Err: Display,
+    D: Deserializer<'de>,
+{
+    let seq = <Vec<String>>::deserialize(d)?;
+    seq.into_iter()
+        .map(|s| s.parse::<T>().map_err(serde::de::Error::custom))
+        .collect()
 }

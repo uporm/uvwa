@@ -23,4 +23,3 @@ where
             .ok_or(axum::http::StatusCode::UNAUTHORIZED)
     }
 }
-

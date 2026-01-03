@@ -1,16 +1,16 @@
-use crate::business::folder::folder_handler;
-use crate::business::tag::tag_handler;
+use crate::business::app::app_handler;
 use crate::business::user::user_handler;
 use crate::business::workspace::workspace_handler;
+use crate::business::workspace_folder::folder_handler;
+use crate::business::workspace_tag::tag_handler;
 use crate::web::middleware::auth::handle_auth;
+use axum::Router;
 use axum::middleware;
 use axum::routing::{delete, get, post, put};
-use axum::Router;
 
 pub fn router() -> Router {
     // 公开路由
-    let public_routes = Router::new()
-        .nest("/uvwa", public_user_routes());
+    let public_routes = Router::new().nest("/uvwa", public_user_routes());
 
     // 受保护路由
     let protected_routes = Router::new()
@@ -18,11 +18,10 @@ pub fn router() -> Router {
         .nest("/uvwa", workspace_routes())
         .nest("/uvwa", folder_routes())
         .nest("/uvwa", tag_routes())
+        .nest("/uvwa", app_routes())
         .layer(middleware::from_fn(handle_auth));
 
-    Router::new()
-        .merge(public_routes)
-        .merge(protected_routes)
+    Router::new().merge(public_routes).merge(protected_routes)
 }
 
 // user routes
@@ -33,8 +32,7 @@ fn public_user_routes() -> Router {
 }
 
 fn user_routes() -> Router {
-    Router::new()
-        .route("/users", get(user_handler::list_users))
+    Router::new().route("/users", get(user_handler::list_users))
 }
 
 // Workspace routes
@@ -42,25 +40,57 @@ fn workspace_routes() -> Router {
     Router::new()
         .route("/workspaces", get(workspace_handler::list_workspaces))
         .route("/workspaces", post(workspace_handler::create_workspace))
-        .route("/workspaces/{key}", put(workspace_handler::update_workspace))
-        .route("/workspaces/{key}", delete(workspace_handler::delete_workspace))
+        .route("/workspaces/{id}", put(workspace_handler::update_workspace))
+        .route(
+            "/workspaces/{id}",
+            delete(workspace_handler::delete_workspace),
+        )
 }
 
 // Folder routes
 fn folder_routes() -> Router {
     Router::new()
-        .route("/folders/{type}", get(folder_handler::get_folder_tree))
-        .route("/folders/{type}", post(folder_handler::create_folder))
-        .route("/folders/{type}/{id}", put(folder_handler::update_folder))
-        .route("/folders/{type}/{id}", delete(folder_handler::delete_folder))
-        .route("/folders/{type}/{id}/move", put(folder_handler::move_folder))
+        .route(
+            "/folders/{folder_type}",
+            get(folder_handler::get_folder_tree),
+        )
+        .route(
+            "/folders/{folder_type}",
+            post(folder_handler::create_folder),
+        )
+        .route(
+            "/folders/{folder_type}/{id}",
+            put(folder_handler::update_folder),
+        )
+        .route(
+            "/folders/{folder_type}/{id}",
+            delete(folder_handler::delete_folder),
+        )
+        .route(
+            "/folders/{folder_type}/{id}/move",
+            put(folder_handler::move_folder),
+        )
 }
 
 // Tag routes
 fn tag_routes() -> Router {
     Router::new()
-        .route("/tags/{type}", get(tag_handler::list_tags))
-        .route("/tags/{type}", post(tag_handler::create_tag))
-        .route("/tags/{type}/{id}", put(tag_handler::update_tag))
-        .route("/tags/{type}/{id}", delete(tag_handler::delete_tag))
+        .route("/tags/{tag_type}", get(tag_handler::list_tags))
+        .route("/tags/{tag_type}", post(tag_handler::create_tag))
+        .route("/tags/{tag_type}/{id}", put(tag_handler::update_tag))
+        .route("/tags/{tag_type}/{id}", delete(tag_handler::delete_tag))
+}
+
+// App routes
+fn app_routes() -> Router {
+    Router::new()
+        .route("/apps", get(app_handler::list_apps))
+        .route("/apps", post(app_handler::create_app))
+        .route("/apps/{id}", put(app_handler::update_app))
+        .route("/apps/{id}", delete(app_handler::delete_app))
+        .route("/apps/{id}/draft", get(app_handler::get_app_draft))
+        .route("/apps/{id}/draft", put(app_handler::update_app_draft))
+        .route("/apps/{id}/tags", put(app_handler::update_app_tags))
+        .route("/apps/{id}/clone", post(app_handler::clone_app))
+        .route("/apps/{id}/release", post(app_handler::release_app))
 }

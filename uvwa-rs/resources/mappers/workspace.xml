@@ -3,7 +3,7 @@
 <mapper namespace="workspace">
 
     <sql id="cols">
-        id, tenant_id, name, description, create_time, update_time
+        id, tenant_id, name, description, create_at, update_at
     </sql>
 
     <select id="list">
@@ -14,7 +14,7 @@
     </select>
 
     <insert id="insert">
-        insert into workspace (id, tenant_id, name, description, create_time, update_time)
+        insert into workspace (id, tenant_id, name, description, create_at, update_at)
         values (#{id}, #{tenantId}, #{name}, #{description}, now(), now())
     </insert>
 
@@ -22,7 +22,7 @@
         update workspace
         set name = #{name},
         description = #{description},
-        update_time = now()
+        update_at = now()
         where id = #{id}
         and tenant_id = #{tenantId}
     </update>

@@ -3,10 +3,11 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use serde::Serialize;
 
-use crate::web::error::WebError;
 use crate::web::code::Code;
+use crate::web::error::WebError;
 use rust_i18n::t;
 use tracing::{debug, error};
+use uorm::error::DbError;
 use validator::ValidationErrors;
 
 #[derive(Serialize)]
@@ -71,6 +72,16 @@ impl R<()> {
             Ok(_) => Self::ok(()),
             Err(err) => Self::err(WebError::from(err)),
         }
+    }
+}
+
+impl<T: Serialize> uorm::TransactionResult for R<T> {
+    fn is_ok(&self) -> bool {
+        self.code == Code::Ok as i32
+    }
+
+    fn from_db_error(err: DbError) -> Self {
+        R::err(err.into())
     }
 }
 

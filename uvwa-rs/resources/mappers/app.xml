@@ -3,22 +3,22 @@
 <mapper namespace="app">
 
     <sql id="cols">
-        id, tenant_id, workspace_id, folder_id, type, name, description, create_time, update_time
+        id, tenant_id, workspace_id, folder_id, app_type, name, description, create_at, update_at
     </sql>
 
-    <!-- 
+    <!--
         查询应用列表
         支持按folder_id和name过滤
         关联app_tag表获取标签ID列表（逗号分隔）
     -->
     <select id="list">
         select
-        a.id, a.tenant_id, a.workspace_id, a.folder_id, a.type, a.name, a.description, a.create_time, a.update_time,
+        a.id, a.tenant_id, a.workspace_id, a.folder_id, a.app_type, a.name, a.description, a.create_at, a.update_at,
         (
-            SELECT GROUP_CONCAT(at.tag_id) 
-            FROM app_tag at 
-            WHERE at.app_id = a.id 
-            AND at.tenant_id = a.tenant_id 
+            SELECT GROUP_CONCAT(at.tag_id)
+            FROM app_tag at
+            WHERE at.app_id = a.id
+            AND at.tenant_id = a.tenant_id
             AND at.workspace_id = a.workspace_id
         ) as tag_ids_str
         from app a
@@ -30,17 +30,17 @@
         <if test="query.name != null and query.name != ''">
             and a.name like concat('%', #{query.name}, '%')
         </if>
-        order by a.create_time desc
+        order by a.create_at desc
     </select>
 
     <select id="getById">
         select
-        a.id, a.tenant_id, a.workspace_id, a.folder_id, a.type, a.name, a.description, a.create_time, a.update_time,
+        a.id, a.tenant_id, a.workspace_id, a.folder_id, a.app_type, a.name, a.description, a.create_at, a.update_at,
         (
-            SELECT GROUP_CONCAT(at.tag_id) 
-            FROM app_tag at 
-            WHERE at.app_id = a.id 
-            AND at.tenant_id = a.tenant_id 
+            SELECT GROUP_CONCAT(at.tag_id)
+            FROM app_tag at
+            WHERE at.app_id = a.id
+            AND at.tenant_id = a.tenant_id
             AND at.workspace_id = a.workspace_id
         ) as tag_ids_str
         from app a
@@ -50,18 +50,18 @@
     </select>
 
     <insert id="insert">
-        insert into app (id, tenant_id, workspace_id, folder_id, type, name, description, create_time, update_time)
-        values (#{app.id}, #{app.tenantId}, #{app.workspaceId}, #{app.folderId}, #{app.type}, #{app.name}, #{app.description}, now(), now())
+        insert into app (id, tenant_id, workspace_id, folder_id, app_type, name, description, create_at, update_at)
+        values (#{id}, #{tenantId}, #{workspaceId}, #{folderId}, #{appType}, #{name}, #{description}, now(), now())
     </insert>
 
     <update id="update">
         update app
-        set name = #{app.name},
-        description = #{app.description},
-        update_time = now()
-        where id = #{app.id}
-        and tenant_id = #{app.tenantId}
-        and workspace_id = #{app.workspaceId}
+        set name = #{name},
+        description = #{description},
+        update_at = now()
+        where id = #{id}
+        and tenant_id = #{tenantId}
+        and workspace_id = #{workspaceId}
     </update>
 
     <delete id="delete">
@@ -79,10 +79,10 @@
     </delete>
 
     <insert id="batchInsertAppTags">
-        insert into app_tag (tenant_id, workspace_id, app_id, tag_id)
+        insert into app_tag (tenant_id, workspace_id, app_id, tag_id, create_at)
         values
         <foreach item="tagId" collection="tagIds" separator=",">
-            (#{tenantId}, #{workspaceId}, #{appId}, #{tagId})
+            (#{tenantId}, #{workspaceId}, #{appId}, #{tagId}, now())
         </foreach>
     </insert>
 
@@ -100,30 +100,42 @@
         and workspace_id = #{workspaceId}
     </delete>
 
-    <select id="getContent">
-        select id, tenant_id, workspace_id, app_id, content
+    <select id="listAppTagsByAppIds">
+        select id, tenant_id, workspace_id, app_id, tag_id
+        from app_tag
+        where tenant_id = #{tenantId}
+        and workspace_id = #{workspaceId}
+        and app_id in
+        <foreach item="appId" collection="appIds" open="(" separator="," close=")">
+            #{appId}
+        </foreach>
+    </select>
+
+    <select id="getDraft">
+        select id, tenant_id, workspace_id, app_id, spec
         from app_content
         where app_id = #{appId}
         and tenant_id = #{tenantId}
         and workspace_id = #{workspaceId}
     </select>
 
-    <insert id="insertOrUpdateContent">
-        insert into app_content (id, tenant_id, workspace_id, app_id, content)
-        values (#{id}, #{tenantId}, #{workspaceId}, #{appId}, #{content})
+    <insert id="insertOrUpdateDraft">
+        insert into app_draft (id, tenant_id, workspace_id, app_id, spec, create_at, update_at)
+        values (#{id}, #{tenantId}, #{workspaceId}, #{appId}, #{spec}, now(), now())
         on duplicate key update
-        content = #{content}
+        spec = VALUES(spec),
+        update_at = now()
     </insert>
 
-    <delete id="deleteContent">
-        delete from app_content
+    <delete id="deleteDraft">
+        delete from app_draft
         where app_id = #{appId}
         and tenant_id = #{tenantId}
         and workspace_id = #{workspaceId}
     </delete>
 
     <update id="cancelLatest">
-        update app_release
+        update app_version
         set is_latest = false
         where app_id = #{appId}
         and tenant_id = #{tenantId}
@@ -131,30 +143,32 @@
         and is_latest = true
     </update>
 
-    <insert id="insertRelease">
-        insert into app_release (id, tenant_id, workspace_id, app_id, version, major, minor, patch, pre_release, description, is_latest, create_time)
+    <insert id="insertVersion">
+        insert into app_version (id, tenant_id, workspace_id, app_id, version, major, minor, patch, pre_release, description, is_latest, create_at)
         values (#{id}, #{tenantId}, #{workspaceId}, #{appId}, #{version},
                 #{major}, #{minor}, #{patch}, #{preRelease}, #{description}, #{isLatest}, now())
     </insert>
 
-    <insert id="insertReleaseContent">
-        insert into app_release_content (id, tenant_id, workspace_id, app_release_id, content)
-        values (#{id}, #{tenantId}, #{workspaceId}, #{appReleaseId}, #{content})
+    <insert id="insertVersionSpec">
+        insert into app_version_spec (id, tenant_id, workspace_id, app_version_id, spec)
+        values (#{id}, #{tenantId}, #{workspaceId}, #{appVersionId}, #{spec})
     </insert>
 
-    <delete id="deleteReleases">
-        delete from app_release
+    <delete id="deleteVersions">
+        delete from app_version
         where app_id = #{appId}
         and tenant_id = #{tenantId}
         and workspace_id = #{workspaceId}
     </delete>
 
-    <delete id="deleteReleaseContent">
-        delete arc
-        from app_release_content arc
-        inner join app_release ar on arc.app_release_id = ar.id
-        where ar.app_id = #{appId}
-        and ar.tenant_id = #{tenantId}
-        and ar.workspace_id = #{workspaceId}
+    <delete id="deleteVersionSpecs">
+        delete from app_version_spec
+        where app_version_id in (
+            select id
+            from app_version
+            where app_id = #{appId}
+            and tenant_id = #{tenantId}
+            and workspace_id = #{workspaceId}
+        )
     </delete>
 </mapper>

@@ -1,3 +1,4 @@
+use crate::utils::id::Id;
 use uorm::{Param, sql};
 
 #[derive(Param, Default)]
@@ -6,22 +7,22 @@ pub struct Folder {
     pub tenant_id: u64,
     pub workspace_id: u64,
     pub parent_id: u64,
-    pub _type: i32,
+    pub folder_type: i32,
     pub name: String,
     pub seq: i32,
     pub description: Option<String>,
 }
 
 impl Folder {
-    pub fn new(tenant_id: u64, workspace_id: u64, _type: i32) -> Self {
+    pub fn new(tenant_id: u64, workspace_id: u64, folder_type: i32) -> Self {
         Self {
-            id: 0,
+            id: Id::next_id().unwrap_or_default(),
             tenant_id,
             workspace_id,
             parent_id: 0,
-            _type,
+            folder_type,
             name: "默认目录".to_string(),
-            seq: 0,
+            seq: 1,
             description: Some("系统自动创建的默认目录".to_string()),
         }
     }
@@ -44,16 +45,12 @@ impl Folder {
     }
 }
 
-#[sql("folder")]
+#[sql("workspace_folder")]
 pub struct FolderDao;
 
 impl FolderDao {
     #[sql("list")]
-    pub async fn list(
-        tenant_id: u64,
-        workspace_id: u64,
-        _type: i32,
-    ) -> uorm::Result<Vec<Folder>> {
+    pub async fn list(tenant_id: u64, workspace_id: u64, type_: i32) -> uorm::Result<Vec<Folder>> {
         exec!()
     }
 

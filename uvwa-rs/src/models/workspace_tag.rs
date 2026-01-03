@@ -1,4 +1,5 @@
-use crate::business::tag::tag_dao::Tag;
+use crate::business::workspace_tag::tag_dao::Tag;
+use crate::web::ts_str::to_str;
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
@@ -10,6 +11,7 @@ pub struct TagReq {
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TagResp {
+    #[serde(serialize_with = "to_str")]
     pub id: u64,
     pub name: String,
 }

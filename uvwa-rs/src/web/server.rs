@@ -1,15 +1,15 @@
 use std::future::Future;
 
+use crate::web::error::WebError;
+use crate::web::middleware::auth::handle_auth;
+use crate::web::middleware::fallback;
+use crate::web::middleware::i18n::handle_i18n;
 use axum::extract::Request;
 use axum::middleware::{Next, from_fn};
 use axum::response::Response;
 use axum::{Router, middleware};
 use tokio::signal;
 use tracing::{error, info};
-use crate::web::error::WebError;
-use crate::web::middleware::i18n::handle_i18n;
-use crate::web::middleware::auth::handle_auth;
-use crate::web::middleware::fallback;
 
 pub struct WebServer {
     router: Router,
@@ -27,12 +27,14 @@ impl WebServer {
     }
 
     pub fn layer_i18n(mut self) -> Self {
-        self.middlewares.push(Box::new(|r| r.layer(from_fn(handle_i18n))));
+        self.middlewares
+            .push(Box::new(|r| r.layer(from_fn(handle_i18n))));
         self
     }
 
     pub fn layer_auth(mut self) -> Self {
-        self.middlewares.push(Box::new(|r| r.layer(from_fn(handle_auth))));
+        self.middlewares
+            .push(Box::new(|r| r.layer(from_fn(handle_auth))));
         self
     }
 
@@ -41,7 +43,8 @@ impl WebServer {
         F: Clone + Send + Sync + 'static + Fn(Request, Next) -> Fut,
         Fut: Future<Output = Response> + Send + 'static,
     {
-        self.middlewares.push(Box::new(|r| r.layer(middleware::from_fn(f))));
+        self.middlewares
+            .push(Box::new(|r| r.layer(middleware::from_fn(f))));
         self
     }
 
@@ -53,7 +56,8 @@ impl WebServer {
     pub async fn start(mut self) -> Result<(), WebError> {
         info!("🚀 Starting web server at {}", self.addr);
 
-        self.router = self.router
+        self.router = self
+            .router
             .method_not_allowed_fallback(fallback::method_not_allowed)
             .fallback(fallback::not_found);
 

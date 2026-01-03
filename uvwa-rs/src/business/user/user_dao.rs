@@ -1,6 +1,6 @@
 use crate::utils::id::Id;
 use uorm::error::DbError;
-use uorm::{sql, Param};
+use uorm::{Param, sql};
 
 #[derive(Param)]
 pub struct User {

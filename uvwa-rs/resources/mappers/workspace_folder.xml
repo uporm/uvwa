@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//uporm.github.io//DTD Mapper 1//EN" "https://uporm.github.io/dtd/uorm-1-mapper.dtd">
-<mapper namespace="folder">
+<mapper namespace="workspace_folder">
 
     <!-- 目录表字段 -->
     <sql id="cols">
-        id, tenant_id, workspace_id, parent_id, type, name, seq, description, create_time, update_time
+        id, tenant_id, workspace_id, parent_id, folder_type, name, seq, description, create_at, update_at
     </sql>
 
     <select id="list">
@@ -13,7 +13,7 @@
         from workspace_folder
         where tenant_id = #{tenantId}
         and workspace_id = #{workspaceId}
-        and `type` = #{type}
+        and folder_type = #{folderType}
         order by seq asc
     </select>
 
@@ -35,16 +35,16 @@
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyColumn="id">
-        insert into workspace_folder (tenant_id, workspace_id, parent_id, type, name, seq, description, create_time,
-        update_time)
-        values (#{tenantId}, #{workspaceId}, #{parentId}, #{type}, #{name}, #{seq}, #{description}, now(), now())
+        insert into workspace_folder (id, tenant_id, workspace_id, parent_id, folder_type, name, seq, description, create_at,
+        update_at)
+        values (#{id}, #{tenantId}, #{workspaceId}, #{parentId}, #{folderType}, #{name}, #{seq}, #{description}, now(), now())
     </insert>
 
     <update id="update">
         update workspace_folder
         set name = #{name},
         description = #{description},
-        update_time = now()
+        update_at = now()
         where id = #{id}
         and tenant_id = #{tenantId}
         and workspace_id = #{workspaceId}
@@ -73,7 +73,7 @@
     <update id="shiftSeqOnInsert">
         update workspace_folder
         set seq = seq + 1,
-        update_time = now()
+        update_at = now()
         where tenant_id = #{tenantId}
         and workspace_id = #{workspaceId}
         and parent_id = #{parentId}
@@ -87,7 +87,7 @@
     <update id="compressSeqOnRemove">
         update workspace_folder
         set seq = seq - 1,
-        update_time = now()
+        update_at = now()
         where tenant_id = #{tenantId}
         and workspace_id = #{workspaceId}
         and parent_id = #{parentId}
@@ -102,7 +102,7 @@
         update workspace_folder
         set parent_id = #{parentId},
         seq = #{seq},
-        update_time = now()
+        update_at = now()
         where tenant_id = #{tenantId}
         and workspace_id = #{workspaceId}
         and id = #{id}

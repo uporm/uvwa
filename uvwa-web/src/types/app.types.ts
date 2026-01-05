@@ -1,4 +1,6 @@
+import { AppTypeEnum } from '@/types/enum.types';
 import { Edge, Node, XYPosition } from '@xyflow/react';
+import React from 'react';
 
 /**
  * 支持的脚本语言类型
@@ -67,7 +69,7 @@ export interface Variable {
 /**
  * 节点类型
  */
-export interface NodeType<T extends Record<string, any>> extends Node {
+export interface FlowNode<T extends Record<string, any>> extends Node {
   id: string;
   type: string;
   data: T;
@@ -78,7 +80,7 @@ export interface NodeType<T extends Record<string, any>> extends Node {
   draggable?: boolean;
 }
 
-export interface EdgeType<T extends Record<string, any>> extends Edge {
+export interface FlowEdge<T extends Record<string, any>> extends Edge {
   id: string;
   source: string;
   target: string;
@@ -90,24 +92,24 @@ export interface EdgeType<T extends Record<string, any>> extends Edge {
 /**
  * 节点配置项
  */
-export interface NodeDefineType {
+export interface FlowNodeDefine {
   icon: string;
   category: string;
   renderComponent: React.ComponentType<any>;
   attributeEditor?: React.ComponentType<any>;
-  defaultConfig?: NodeType<any>;
+  defaultConfig?: FlowNode<any>;
 }
 
 /**
  * 开始节点类型
  */
-export interface StartNodeType {
+export interface StartNode {
   title?: string;
   description?: string;
   input?: Variable[];
 }
 
-export interface EndNodeOutputType {
+export interface EndNodeOutput {
   title?: string;
   description?: string;
   vars: Variable[];
@@ -122,10 +124,10 @@ export interface EndNodeOutputType {
 /**
  * 脚本节点类型
  */
-export interface EndNodeType {
+export interface EndNode {
   title?: string;
   description?: string;
-  output?: EndNodeOutputType;
+  output?: EndNodeOutput;
 }
 
 /**
@@ -149,7 +151,7 @@ export interface Case {
 /**
  * 条件分支
  */
-export interface CaseNodeType {
+export interface CaseNode {
   title?: string;
   description?: string;
   cases: Case[];
@@ -158,7 +160,7 @@ export interface CaseNodeType {
 /**
  * 循环节点类型
  */
-export interface LoopNodeType {
+export interface LoopNode {
   title?: string;
   description?: string;
   type: 'for' | 'while' | 'forever';
@@ -173,7 +175,7 @@ export interface LoopNodeType {
 /**
  * 脚本节点类型
  */
-export interface CodeNodeType {
+export interface CodeNode {
   title?: string;
   description?: string;
   language: ScriptLanguage;
@@ -185,7 +187,7 @@ export interface CodeNodeType {
   debug?: boolean;
 }
 
-export interface SqlNodeType {
+export interface SqlNode {
   title?: string;
   description?: string;
   connKey: string;
@@ -194,7 +196,7 @@ export interface SqlNodeType {
   output?: Variable[];
 }
 
-export interface SqlTransactionNodeType {
+export interface SqlTransactionNode {
   title?: string;
   description?: string;
   connKey: string;
@@ -202,7 +204,7 @@ export interface SqlTransactionNodeType {
   expanded: boolean;
 }
 
-export interface SubFlowNodeType {
+export interface SubFlowNode {
   title?: string;
   description?: string;
   flowId: string;
@@ -210,20 +212,13 @@ export interface SubFlowNodeType {
   output?: Variable[];
 }
 
-export interface NoteNodeType {
+export interface NoteNode {
   title?: string;
   description?: string;
   content: string;
 }
 
-export enum AppTypeEnum {
-  All = 0,
-  FLOW = 1,
-  CHAT = 2,
-  AUTONOMOUS = 3,
-}
-
-export interface AppType {
+export interface App {
   id: string;
   type: AppTypeEnum;
   folderId: string;
@@ -233,9 +228,9 @@ export interface AppType {
   updatedTime: string;
 }
 
-export interface AppDetailType extends AppType {
-  nodes: NodeType<any>[];
-  edges: EdgeType<any>[];
+export interface AppDraft extends App {
+  nodes: FlowNode<any>[];
+  edges: FlowEdge<any>[];
   viewport: {
     x: number;
     y: number;
@@ -247,7 +242,7 @@ export interface CreateAppReq {
   folderId: string;
   name: string;
   description?: string;
-  type: AppTypeEnum;
+  appType: AppTypeEnum;
 }
 
 export interface UpdateAppReq {
@@ -260,7 +255,7 @@ export interface ListAppReq {
   // 目录树选中的节点ID
   folderId?: string;
   // 类型：工作流/对话流/智能体
-  type?: AppTypeEnum;
+  appType?: AppTypeEnum;
   // 标签过滤
   tagIds?: string[];
   // 名称搜索

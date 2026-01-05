@@ -1,7 +1,7 @@
-import { getAppContent, updateAppContent } from '@/api/app.api';
+import { getAppDraft, updateAppDraft } from '@/api/app.api';
 import { NODE_TYPE, NodeDefineTypes } from '@/pages/app/nodeTypes';
 import { getAllChildrenIds, sortNodes } from '@/pages/app/util';
-import { EdgeType, NodeType } from '@/types/app.types';
+import { FlowEdge, FlowNode } from '@/types/app.types';
 import { newId } from '@/utils/id';
 import { message } from 'antd';
 import { proxy, subscribe } from 'valtio';
@@ -15,13 +15,13 @@ interface NodeSize {
 const NodeSizeMap: Record<string, NodeSize> = {};
 
 export const flowContentState = proxy({
-  nodes: [] as NodeType<any>[],
-  edges: [] as EdgeType<any>[],
+  nodes: [] as FlowNode<any>[],
+  edges: [] as FlowEdge<any>[],
 });
 
 // 工作流编辑相关状态
 export const flowEditorState = proxy({
-  selectedNode: null as NodeType<any> | null,
+  selectedNode: null as FlowNode<any> | null,
   hoveredNodeId: null as string | null,
   currentAppId: null as string | null,
   lastSaved: '' as string,
@@ -34,7 +34,7 @@ export const initSubscribe = () => {
 // ==================== 工作流编辑相关函数 ====================
 
 export const fetchAppContent = async (id: string) => {
-  const r = await getAppContent(id);
+  const r = await getAppDraft(id);
   const appContent = JSON.parse(r.data || '{}');
   flowContentState.nodes = appContent.nodes || [];
   flowContentState.edges = appContent.edges || [];
@@ -60,12 +60,12 @@ const scheduleAutoSave = () => {
     // 如果没有变化则跳过保存
     if (serialized === flowEditorState.lastSaved) return;
 
-    await updateAppContent(flowEditorState.currentAppId!, serialized);
+    await updateAppDraft(flowEditorState.currentAppId!, serialized);
     flowEditorState.lastSaved = serialized;
   }, 800);
 };
 
-export const setSelectedNode = (node: NodeType<any> | null) => {
+export const setSelectedNode = (node: FlowNode<any> | null) => {
   flowEditorState.selectedNode = node;
 };
 
@@ -73,12 +73,12 @@ export const setHoveredNodeId = (nodeId: string | null) => {
   flowEditorState.hoveredNodeId = nodeId;
 };
 
-export const setNodes = (nodes: NodeType<any>[]) => {
+export const setNodes = (nodes: FlowNode<any>[]) => {
   console.log('setNodes', nodes);
   flowContentState.nodes = nodes;
 };
 
-export const setEdges = (edges: EdgeType<any>[]) => {
+export const setEdges = (edges: FlowEdge<any>[]) => {
   console.log('setEdges', edges);
   flowContentState.edges = edges;
 };
@@ -91,8 +91,8 @@ export const addNode = (type: string, position: { x: number; y: number }) => {
   }
   let node = NodeDefineTypes[type];
   let id = newId();
-  let nodes: NodeType<any>[] = [];
-  const newNode: NodeType<any> = {
+  let nodes: FlowNode<any>[] = [];
+  const newNode: FlowNode<any> = {
     id,
     type,
     position,
@@ -118,7 +118,7 @@ export const addNode = (type: string, position: { x: number; y: number }) => {
   flowContentState.nodes.push(...nodes);
 };
 
-export const updateNode = (node: NodeType<any>) => {
+export const updateNode = (node: FlowNode<any>) => {
   let nodes = flowContentState.nodes.map((n) => (n.id === node.id ? node : n));
   flowContentState.nodes = sortNodes(nodes);
 
@@ -159,7 +159,7 @@ export const cloneNode = (nodeId: string) => {
   const clonedData = JSON.parse(JSON.stringify(sourceNode.data));
 
   // 创建克隆节点，位置稍微偏移避免重叠
-  const clonedNode: NodeType<any> = {
+  const clonedNode: FlowNode<any> = {
     ...sourceNode,
     id: newId(),
     data: clonedData,

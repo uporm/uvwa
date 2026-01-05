@@ -1,9 +1,9 @@
-import IconFont from '@/components/icon-font';
 import WorkspaceSelect from '@/layouts/components/workspace-select';
 import styles from '@/layouts/styles.less';
 import { AppstoreOutlined, WalletOutlined, CompassOutlined } from '@ant-design/icons';
 import { Avatar, Divider, Flex, Segmented } from 'antd';
 import React from 'react';
+import { useLocation, useNavigate } from 'umi';
 
 const options = [
   {
@@ -18,12 +18,20 @@ const options = [
   },
 ];
 
-interface HeaderProps {
-  currentPage: string;
-  onPageChange: (value: string) => void;
-}
+const Header: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
 
-const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
+  const currentPage = location.pathname.startsWith('/knowledge') ? 'knowledge' : 'app';
+
+  const onPageChange = (value: string) => {
+    if (value === 'app') {
+      navigate('/');
+    } else if (value === 'knowledge') {
+      navigate('/knowledge');
+    }
+  };
+
   return (
     <Flex justify="space-between" align="center" className={styles.header}>
       <Flex align="center" className={styles.logoArea}>
@@ -43,7 +51,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
       />
       <Flex className={styles.userOperationArea} justify="end" align="center">
         <WorkspaceSelect />
-        <Divider type="vertical" />
+        <Divider orientation="vertical" />
         <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
         <span>Jason</span>
       </Flex>

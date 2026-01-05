@@ -1,6 +1,6 @@
 import FlowNodeResizeControl from '@/pages/app/components/app-flow/components/node-resize-control';
 import NodeWrapper from '@/pages/app/components/app-flow/components/node-wrapper';
-import { NodeType } from '@/types/app.types';
+import { FlowNode } from '@/types/app.types';
 import React, { memo, useState } from 'react';
 
 /**
@@ -8,7 +8,7 @@ import React, { memo, useState } from 'react';
  */
 interface GroupNodeProps {
   /** 节点数据 */
-  node: NodeType<any>;
+  node: FlowNode<any>;
   /** 子组件 */
   children?: React.ReactNode;
 }

@@ -1,6 +1,7 @@
 // 数据库类型选项
-import { AppTypeEnum, VariableNode } from '@/types/app.types';
+import { VariableNode } from '@/types/app.types';
 import { ObjectType } from '@/types/common.types';
+import { AppTypeEnum } from '@/types/enum.types';
 
 export const DATABASE_TYPES = [
   { label: 'MySQL', value: 'mysql' },
@@ -125,7 +126,7 @@ export const VARIABLE_TYPES: VariableNode[] = [
 ];
 
 export const APP_TYPES = [
-  { label: '全部', value: 0 },
+  { label: '全部', value: AppTypeEnum.All },
   { label: '工作流', value: AppTypeEnum.FLOW },
   { label: '对话式', value: AppTypeEnum.CHAT },
   { label: '自主式', value: AppTypeEnum.AUTONOMOUS },

@@ -5,11 +5,8 @@ import axios, { AxiosRequestConfig, RawAxiosRequestHeaders, ResponseType } from 
 
 export const OK = 200;
 export const ERROR = 500;
-export const MISSING_PARAMETER = 400;
 export const UNAUTHORIZED = 401;
 export const FORBIDDEN = 403;
-export const NOT_FOUND = 404;
-export const ILLEGAL_PARAMETER = 901;
 export const formType = 'form';
 export const jsonType = 'json';
 
@@ -31,12 +28,12 @@ const parseOptions = (options?: Options): AxiosRequestConfig => {
 
 const redirectUrl = () => {
   const locationRef = self !== top ? parent.location : location;
-  locationRef.href = '/uc/home';
+  locationRef.href = '/login';
 };
 
 axios.interceptors.request.use(
   function (config) {
-    config.headers['NS-TOKEN'] = getToken();
+    config.headers['x-token'] = getToken();
     config.baseURL = '/api';
     config.timeout = config.timeout || 60000;
     return config;
@@ -64,14 +61,11 @@ axios.interceptors.response.use(
         redirectUrl();
         break;
       case FORBIDDEN:
-      case NOT_FOUND:
       case ERROR:
-      case MISSING_PARAMETER:
-      case ILLEGAL_PARAMETER:
         message.error(err.response.data.message);
         break;
       default:
-        message.info('请求数据发生错误！');
+        message.info(err.response.data.message);
     }
     return Promise.reject(err);
   },

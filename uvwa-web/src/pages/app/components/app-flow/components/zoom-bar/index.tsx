@@ -13,7 +13,7 @@ const ZOOM_LEVELS: MenuProps['items'] = [
 ];
 
 const usePrevious = <T,>(value: T): T | undefined => {
-  const ref = useRef<T>();
+  const ref = useRef<T>(undefined);
   useEffect(() => {
     ref.current = value;
   });
@@ -87,7 +87,7 @@ const ZoomBar = () => {
           </Dropdown>
           <Button type="text" icon={<ZoomInOutlined />} onClick={onZoomIn} />
         </Flex>
-        <Divider type="vertical" />
+        <Divider orientation="vertical" />
         <Button type="text" icon={<FullscreenOutlined />} onClick={onFitView} />
       </Flex>
     </Panel>

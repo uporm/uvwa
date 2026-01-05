@@ -1,14 +1,14 @@
 import VariableAvailableSelect from '@/components/variable-available-select';
 import { getAvailableVariables } from '@/pages/app/variables';
 import { flowContentState } from '@/stores/app-flow.store';
-import { EdgeType, LoopNodeType, NodeType } from '@/types/app.types';
+import { FlowEdge, LoopNode, FlowNode } from '@/types/app.types';
 import { Card, Flex, Form, Input, Select } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useSnapshot } from 'valtio';
 
 interface LoopNodeProps {
-  node: NodeType<LoopNodeType>;
-  onChange: (node: NodeType<LoopNodeType>) => void;
+  node: FlowNode<LoopNode>;
+  onChange: (node: FlowNode<LoopNode>) => void;
 }
 
 const options = [
@@ -67,8 +67,8 @@ export default ({ node, onChange }: LoopNodeProps) => {
   const variablesWithNode = useMemo(() => {
     return getAvailableVariables(
       node.id,
-      flowContentSnap.nodes as NodeType<LoopNodeType>[],
-      flowContentSnap.edges as EdgeType<any>[],
+      flowContentSnap.nodes as FlowNode<LoopNode>[],
+      flowContentSnap.edges as FlowEdge<any>[],
     );
   }, [node.id, flowContentSnap.nodes, flowContentSnap.edges]);
 

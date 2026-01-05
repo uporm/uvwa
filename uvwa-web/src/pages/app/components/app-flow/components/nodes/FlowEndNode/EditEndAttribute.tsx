@@ -2,7 +2,7 @@ import MonacoEditor from '@/components/monaco-editor';
 import VariableAvailableSelect from '@/components/variable-available-select';
 import { getAvailableVariables } from '@/pages/app/variables';
 import { flowContentState } from '@/stores/app-flow.store';
-import { EdgeType, EndNodeType, NodeType, SqlNodeType } from '@/types/app.types';
+import { FlowEdge, EndNode, FlowNode, SqlNode } from '@/types/app.types';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Flex, Form, Input, List, Space, Switch, theme } from 'antd';
 import { useEffect, useMemo } from 'react';
@@ -12,8 +12,8 @@ import styles from './styles.less';
 const { useToken } = theme;
 
 interface EndNodeProps {
-  node: NodeType<EndNodeType>;
-  onChange: (node: NodeType<EndNodeType>) => void;
+  node: FlowNode<EndNode>;
+  onChange: (node: FlowNode<EndNode>) => void;
 }
 
 export default ({ node, onChange }: EndNodeProps) => {
@@ -60,8 +60,8 @@ export default ({ node, onChange }: EndNodeProps) => {
   const variablesWithNode = useMemo(() => {
     return getAvailableVariables(
       node.id,
-      flowContentSnap.nodes as NodeType<SqlNodeType>[],
-      flowContentSnap.edges as EdgeType<any>[],
+      flowContentSnap.nodes as FlowNode<SqlNode>[],
+      flowContentSnap.edges as FlowEdge<any>[],
     );
   }, [node.id, flowContentSnap.nodes, flowContentSnap.edges]);
 

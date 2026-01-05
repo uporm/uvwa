@@ -1,15 +1,15 @@
 import { APP_TYPES } from '@/constants/app';
-import { AppType } from '@/types/app.types';
+import { App } from '@/types/app.types';
 import { Form, Input, Modal, Select, TreeDataNode, TreeSelect } from 'antd';
 import React, { useState } from 'react';
 
 export interface AppModalProps {
   title?: string;
   folderTreeData: TreeDataNode[];
-  values?: AppType;
+  values?: App;
   visible: boolean;
   onClose: () => void;
-  onOk?: (values: AppType) => Promise<void>;
+  onOk?: (values: App) => Promise<void>;
 }
 
 const AppModal: React.FC<AppModalProps> = ({ title, folderTreeData, values, visible, onClose, onOk }) => {

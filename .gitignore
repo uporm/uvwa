@@ -26,3 +26,4 @@ uvwa-web/src/.umi-test
 uvwa-web/.umirc.local.ts
 uvwa-web/.env*
 uvwa-web/dist
+uvwa-web/.yarn

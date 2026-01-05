@@ -1,14 +1,14 @@
 import { createFolder, deleteFolder, listFolders, moveFolder, renameFolder } from '@/api/folder.api';
-import EditableTree, { type EditableTreeRef } from '@/components/editable-tree';
+import EditableTree from '@/components/editable-tree';
 import AppModal from '@/pages/app/components/app-modal';
 import { appState, fetchApps, saveApp, setEditApp } from '@/stores/app.store';
-import { AppType } from '@/types/app.types';
-import { FolderTypeEnum } from '@/types/sys.types';
-import { ExportOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, TreeDataNode } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import { App } from '@/types/app.types';
+import { ExportOutlined, ImportOutlined } from '@ant-design/icons';
+import { Card, TreeDataNode } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { useSnapshot } from 'valtio';
 import styles from './app-folder.module.less';
+import { FolderTypeEnum } from '@/types/enum.types';
 
 // 将后端返回的目录结构转换为 Antd TreeDataNode
 const toTreeData = (nodes: any[]): TreeDataNode[] => {
@@ -24,8 +24,6 @@ const FolderTree: React.FC = () => {
   const snap = useSnapshot(appState);
   const [treeData, setTreeData] = useState<TreeDataNode[]>([]);
 
-  const treeRef = useRef<EditableTreeRef>(null);
-
   useEffect(() => {
     const loadFolders = async () => {
       const res = await listFolders(FolderTypeEnum.APP);
@@ -35,7 +33,7 @@ const FolderTree: React.FC = () => {
     loadFolders();
   }, []);
 
-  const handleUpdateApp = async (values: AppType) => {
+  const handleUpdateApp = async (values: App) => {
     saveApp(values);
   };
 
@@ -45,10 +43,8 @@ const FolderTree: React.FC = () => {
         className={styles.noBorderCard}
         title="资源管理器"
         size="small"
-        extra={<Button type="text" icon={<PlusOutlined />} onClick={() => treeRef.current?.createRootNode()} />}
       >
         <EditableTree
-          ref={treeRef}
           value={treeData}
           expandAll
           onChange={(nodes) => setTreeData(nodes)}
@@ -63,7 +59,7 @@ const FolderTree: React.FC = () => {
           }}
           onCreate={async (parentId, name) => {
             const res = await createFolder(FolderTypeEnum.APP, {
-              parentId: parentId ? String(parentId) : '0',
+              parentId: parentId ? String(parentId) : '1',
               name,
             });
             return res?.data as React.Key;
@@ -79,7 +75,7 @@ const FolderTree: React.FC = () => {
             await moveFolder(FolderTypeEnum.APP, String(id), parentId ? String(parentId) : '0', seq);
           }}
           onSelect={(selectedKey) => {
-            fetchApps({ folderId: String(selectedKey ?? '') });
+            fetchApps({ folderId: String(selectedKey?? '')});
           }}
         />
       </Card>
@@ -89,7 +85,7 @@ const FolderTree: React.FC = () => {
           folderTreeData={treeData || []}
           title={snap.editApp.title}
           visible={snap.editApp.open}
-          values={snap.editApp.info as AppType}
+          values={snap.editApp.info as App}
           onClose={() => setEditApp({ open: false, operation: 'NEW' })}
           onOk={handleUpdateApp}
         />

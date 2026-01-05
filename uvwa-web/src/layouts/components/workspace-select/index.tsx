@@ -1,18 +1,13 @@
 import styles from '@/layouts/styles.less';
-import { initWorkspace, switchWorkspace, workspaceState } from '@/stores/workspace.store';
+import { switchWorkspace, workspaceState } from '@/stores/workspace.store';
+import { Workspace } from '@/types/workspace.types';
 import { AliwangwangOutlined, HomeOutlined } from '@ant-design/icons';
 import { Button, Divider, Flex, Select } from 'antd';
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { useSnapshot } from 'valtio';
 
-interface WorkspaceSelectProps {}
-
-const WorkspaceSelect: FC<WorkspaceSelectProps> = () => {
+const WorkspaceSelect: FC = () => {
   const { asyncWorkspaces, currWorkspaceId } = useSnapshot(workspaceState);
-
-  useEffect(() => {
-    initWorkspace();
-  }, []);
 
   const handleWorkspaceChange = (workspaceId: string) => {
     switchWorkspace(workspaceId);
@@ -20,7 +15,7 @@ const WorkspaceSelect: FC<WorkspaceSelectProps> = () => {
 
   // 确保options中包含当前选中的工作空间，即使在数据加载期间
   const selectOptions = React.useMemo(() => {
-    const options = asyncWorkspaces.data?.map((workspace) => ({
+    const options = asyncWorkspaces.data?.map((workspace: Workspace) => ({
       value: workspace.id,
       label: (
         <Flex gap={4}>
@@ -39,6 +34,7 @@ const WorkspaceSelect: FC<WorkspaceSelectProps> = () => {
       value={currWorkspaceId}
       loading={asyncWorkspaces.loading}
       popupMatchSelectWidth={200}
+      styles={{ root: { border: 'none' } }}
       className={styles.workspace}
       onChange={handleWorkspaceChange}
       popupRender={(menu) => (

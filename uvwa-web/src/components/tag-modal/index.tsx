@@ -1,4 +1,4 @@
-import { TagType } from '@/types/sys.types';
+import { WorkspaceTag } from '@/types/workspace.types';
 import { PlusOutlined } from '@ant-design/icons';
 import { Input, InputRef, message, Modal, Space, Tag, Tooltip } from 'antd';
 import { nanoid } from 'nanoid';
@@ -7,11 +7,11 @@ import styles from './styles.less';
 
 interface TagModalProps {
   open: boolean;
-  tags: TagType[];
+  tags: WorkspaceTag[];
   onCancel: () => void;
-  onAdd?: (tag: TagType) => void;
-  onUpdate?: (tag: TagType) => void;
-  onDelete?: (tag: TagType) => void;
+  onAdd?: (tag: WorkspaceTag) => void;
+  onUpdate?: (tag: WorkspaceTag) => void;
+  onDelete?: (tag: WorkspaceTag) => void;
 }
 
 // Types
@@ -22,7 +22,7 @@ interface EditingTag {
 
 const TagsModal: React.FC<TagModalProps> = ({ open, tags: initialTags, onCancel, onAdd, onUpdate, onDelete }) => {
   // State Management
-  const [tags, setTags] = useState<TagType[]>(initialTags || []);
+  const [tags, setTags] = useState<WorkspaceTag[]>(initialTags || []);
   const [isAdding, setIsAdding] = useState(false);
   const [newTagValue, setNewTagValue] = useState('');
   const [editingTag, setEditingTag] = useState<EditingTag | null>(null);
@@ -55,7 +55,7 @@ const TagsModal: React.FC<TagModalProps> = ({ open, tags: initialTags, onCancel,
   }, [open, initialTags]);
 
   // Utility Functions
-  const validateTag = useCallback((tag: string, currentTags: TagType[], originalTag?: TagType): boolean => {
+  const validateTag = useCallback((tag: string, currentTags: WorkspaceTag[], originalTag?: WorkspaceTag): boolean => {
     const trimmedValue = tag.trim();
 
     if (!trimmedValue) return false;
@@ -80,7 +80,7 @@ const TagsModal: React.FC<TagModalProps> = ({ open, tags: initialTags, onCancel,
 
   // Tag Operations
   const removeTag = useCallback(
-    (tagToRemove: TagType) => {
+    (tagToRemove: WorkspaceTag) => {
       setTags((prevTags) => prevTags.filter((tag) => tag.id !== tagToRemove.id));
       if (onDelete) {
         onDelete(tagToRemove);
@@ -100,7 +100,7 @@ const TagsModal: React.FC<TagModalProps> = ({ open, tags: initialTags, onCancel,
   const confirmNewTag = useCallback(() => {
     if (validateTag(newTagValue, tags)) {
       const trimmedValue = newTagValue.trim();
-      const newTag = { id: nanoid(), name: trimmedValue } as TagType;
+      const newTag = { id: nanoid(), name: trimmedValue } as WorkspaceTag;
       setTags((prevTags) => [...prevTags, newTag]);
       if (onAdd) {
         onAdd(newTag);
@@ -110,7 +110,7 @@ const TagsModal: React.FC<TagModalProps> = ({ open, tags: initialTags, onCancel,
     setNewTagValue('');
   }, [newTagValue, tags, validateTag, onAdd]);
 
-  const startEditingTag = useCallback((tag: TagType) => {
+  const startEditingTag = useCallback((tag: WorkspaceTag) => {
     setEditingTag({ id: tag.id, value: tag.name });
   }, []);
 
@@ -135,7 +135,7 @@ const TagsModal: React.FC<TagModalProps> = ({ open, tags: initialTags, onCancel,
     }
 
     if (validateTag(trimmedValue, tags, originalTag)) {
-      const updatedTag = { ...originalTag!, name: trimmedValue } as TagType;
+      const updatedTag = { ...originalTag!, name: trimmedValue } as WorkspaceTag;
       setTags((prevTags) => prevTags.map((tag) => (tag.id === editingTag.id ? updatedTag : tag)));
       if (onUpdate) {
         onUpdate(updatedTag);
@@ -146,7 +146,7 @@ const TagsModal: React.FC<TagModalProps> = ({ open, tags: initialTags, onCancel,
 
   // Tag Rendering
   const renderTag = useCallback(
-    (tag: TagType) => {
+    (tag: WorkspaceTag) => {
       const isEditing = editingTag?.id === tag.id;
       const isLongTag = tag.name.length > 20;
 

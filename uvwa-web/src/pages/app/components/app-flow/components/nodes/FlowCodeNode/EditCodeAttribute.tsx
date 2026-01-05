@@ -4,7 +4,7 @@ import VariableTypeSelect from '@/components/variable-type-select';
 import { VARIABLE_TYPES } from '@/constants/app';
 import { getAvailableVariables } from '@/pages/app/variables';
 import { flowContentState } from '@/stores/app-flow.store';
-import { CodeNodeType, EdgeType, NodeType, SqlNodeType } from '@/types/app.types';
+import { CodeNode, FlowEdge, FlowNode, SqlNode } from '@/types/app.types';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Divider, Flex, Form, Input, List, Select, theme } from 'antd';
 import { useEffect, useMemo } from 'react';
@@ -14,8 +14,8 @@ import styles from './styles.less';
 const { useToken } = theme;
 
 interface CodeNodeProps {
-  node: NodeType<CodeNodeType>;
-  onChange: (node: NodeType<CodeNodeType>) => void;
+  node: FlowNode<CodeNode>;
+  onChange: (node: FlowNode<CodeNode>) => void;
 }
 
 export default ({ node, onChange }: CodeNodeProps) => {
@@ -55,8 +55,8 @@ export default ({ node, onChange }: CodeNodeProps) => {
   const variablesWithNode = useMemo(() => {
     return getAvailableVariables(
       node.id,
-      flowContentSnap.nodes as NodeType<SqlNodeType>[],
-      flowContentSnap.edges as EdgeType<any>[],
+      flowContentSnap.nodes as FlowNode<SqlNode>[],
+      flowContentSnap.edges as FlowEdge<any>[],
     );
   }, [node.id, flowContentSnap.nodes, flowContentSnap.edges]);
 

@@ -19,13 +19,13 @@ import IconFont from '@/components/icon-font';
 import NodeWrapper from '@/pages/app/components/app-flow/components/node-wrapper';
 import { getVariableInfoById } from '@/pages/app/variables';
 import { flowContentState } from '@/stores/app-flow.store';
-import { Case, CaseNodeType, NodeType } from '@/types/app.types';
+import { Case, CaseNode, FlowNode } from '@/types/app.types';
 import { useSnapshot } from 'valtio';
 import { useHandlePositions } from './useHandlePositions';
 
 const { useToken } = theme;
 
-export default memo((node: NodeType<CaseNodeType>) => {
+export default memo((node: FlowNode<CaseNode>) => {
   // 使用自定义 hook 管理 handle 位置
   const { handles, setElementRef } = useHandlePositions({
     nodeId: node.id,

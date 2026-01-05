@@ -5,7 +5,7 @@ import { memo, useEffect, useRef } from 'react';
 import styles from './index.less';
 
 const usePrevious = <T,>(value: T): T | undefined => {
-  const ref = useRef<T>();
+  const ref = useRef<T>(undefined);
   useEffect(() => {
     ref.current = value;
   });
@@ -25,7 +25,7 @@ const RedoBar = () => {
             <Button type="text" icon={<RedoOutlined />} />
           </Tooltip>
         </Flex>
-        <Divider type="vertical" size={'small'} />
+        <Divider orientation="vertical" size={'small'} />
         <Tooltip placement="top" title="变更记录">
           <Button type="text" icon={<RedoOutlined />} />
         </Tooltip>

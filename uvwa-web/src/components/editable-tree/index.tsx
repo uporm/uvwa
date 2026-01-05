@@ -122,6 +122,7 @@ const EditableTree = forwardRef<EditableTreeRef, EditableTreeProps>((props, ref)
     <>
       <Tree
         blockNode
+        showLine={true}
         draggable={{ icon: false }}
         treeData={renderTreeData}
         selectedKeys={selectedNodeIds}

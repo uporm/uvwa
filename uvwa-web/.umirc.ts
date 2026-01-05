@@ -24,7 +24,8 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/api': '/' },
       onProxyReq: (proxyReq: any) => {
-        proxyReq.setHeader('X-USER-ID', 0);
+        proxyReq.setHeader('x-tenant-id', 1);
+        proxyReq.setHeader('x-user-id', 0);
       },
     },
   },

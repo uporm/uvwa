@@ -8,7 +8,7 @@ import IconFont from '@/components/icon-font';
 import ResizablePanel from '@/components/resizable-panel';
 import { NodeDefineTypes } from '@/pages/app/nodeTypes';
 import { flowEditorState, updateNode } from '@/stores/app-flow.store';
-import { NodeType } from '@/types/app.types';
+import { FlowNode } from '@/types/app.types';
 import styles from './styles.less';
 
 const { TextArea } = Input;
@@ -20,8 +20,8 @@ interface AttributePanelProps {}
 interface NodeConfig {
   icon?: string;
   attributeEditor?: ComponentType<{
-    node: NodeType<any>;
-    onChange?: (node: NodeType<any>) => void;
+    node: FlowNode<any>;
+    onChange?: (node: FlowNode<any>) => void;
   }>;
 }
 
@@ -84,7 +84,7 @@ export const AttributePanel: React.FC<AttributePanelProps> = () => {
   const flowEditorSnap = useSnapshot(flowEditorState);
 
   // 处理节点数据变更
-  const handleNodeChange = useCallback((updatedNode: NodeType<any>) => {
+  const handleNodeChange = useCallback((updatedNode: FlowNode<any>) => {
     updateNode(updatedNode);
   }, []);
 
@@ -100,7 +100,7 @@ export const AttributePanel: React.FC<AttributePanelProps> = () => {
           ...changedValues,
         },
       };
-      updateNode(updatedNode as NodeType<any>);
+      updateNode(updatedNode as FlowNode<any>);
     },
     [flowEditorSnap.selectedNode],
   );
@@ -152,7 +152,7 @@ export const AttributePanel: React.FC<AttributePanelProps> = () => {
           {/* 内容区域 */}
           <main className={styles.panelContent}>
             {AttributeEditor && (
-              <AttributeEditor node={flowEditorSnap.selectedNode as NodeType<any>} onChange={handleNodeChange} />
+              <AttributeEditor node={flowEditorSnap.selectedNode as FlowNode<any>} onChange={handleNodeChange} />
             )}
           </main>
         </div>

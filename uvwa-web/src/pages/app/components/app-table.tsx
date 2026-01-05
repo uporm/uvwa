@@ -1,13 +1,13 @@
 import IconFont from '@/components/icon-font';
 import AppFlow from '@/pages/app/components/app-flow';
-import styles from '@/pages/app/styles.less';
 import { appState, editAppTag, removeApp, setEditApp } from '@/stores/app.store';
-import { AppType, AppTypeEnum } from '@/types/app.types';
 import { CopyOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, TagOutlined } from '@ant-design/icons';
 import { Button, Card, Dropdown, Flex, message, Modal, Select, Spin, Tag, theme, Typography } from 'antd';
 import dayjs from 'dayjs';
 import React, { useCallback, useState } from 'react';
 import { useSnapshot } from 'valtio';
+import { App } from '@/types/app.types';
+import { AppTypeEnum } from '@/types/enum.types';
 
 const { useToken } = theme;
 
@@ -29,9 +29,9 @@ const getAppIcon = (type: AppTypeEnum) => {
 const AppTable: React.FC = () => {
   const appSnap = useSnapshot(appState);
   const { token } = useToken();
-  const [flow, setFlow] = useState({ open: false, app: {} as AppType });
+  const [flow, setFlow] = useState({ open: false, app: {} as App });
 
-  const handleOpenApp = useCallback((app: AppType) => {
+  const handleOpenApp = useCallback((app: App) => {
     setFlow({ open: true, app });
   }, []);
 
@@ -44,7 +44,7 @@ const AppTable: React.FC = () => {
   );
 
   const handleDeleteApp = useCallback(
-    (app: AppType) => {
+    (app: App) => {
       Modal.confirm({
         title: '确认删除',
         content: `确定要删除应用 "${app.name}" 吗？此操作不可恢复。`,
@@ -58,7 +58,7 @@ const AppTable: React.FC = () => {
     [removeApp],
   );
 
-  const getDropdownItems = (app: AppType) => [
+  const getDropdownItems = (app: App) => [
     {
       key: 'edit',
       label: '编辑',
@@ -100,7 +100,7 @@ const AppTable: React.FC = () => {
             style={{ width: '350px' }}
             styles={{ body: { padding: '10px 10px 1px 10px', height: '100%' } }}
           >
-            <Flex vertical onClick={() => handleOpenApp(app as AppType)}>
+            <Flex vertical onClick={() => handleOpenApp(app as App)}>
               <Flex align="center" gap={6}>
                 <IconFont type={getAppIcon(app.type)} style={{ color: token.colorPrimary, fontSize: '36px' }} />
                 <Flex vertical gap={2}>
@@ -133,7 +133,8 @@ const AppTable: React.FC = () => {
                     添加标签
                   </Tag>
                 }
-                className={styles.tagSelect}
+                styles={{root:{border: 'none'}}}
+                // className={styles.tagSelect}
                 options={
                   appSnap.tags.data?.map((tag) => ({
                     label: tag.name,
@@ -142,14 +143,14 @@ const AppTable: React.FC = () => {
                 }
               />
 
-              <Dropdown trigger={['click']} placement="bottomRight" menu={{ items: getDropdownItems(app as AppType) }}>
+              <Dropdown trigger={['click']} placement="bottomRight" menu={{ items: getDropdownItems(app as App) }}>
                 <Button style={{ flexShrink: 0 }} type="text" icon={<EllipsisOutlined />} />
               </Dropdown>
             </Flex>
           </Card>
         ))}
       </Flex>
-      <AppFlow app={flow.app} open={flow.open} onClose={() => setFlow({ open: false, app: {} as AppType })} />
+      <AppFlow app={flow.app} open={flow.open} onClose={() => setFlow({ open: false, app: {} as App })} />
     </Spin>
   );
 };

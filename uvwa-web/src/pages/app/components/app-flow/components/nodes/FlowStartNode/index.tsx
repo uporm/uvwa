@@ -2,14 +2,14 @@ import IconFont from '@/components/icon-font';
 import NodeResizeControl from '@/pages/app/components/app-flow/components/node-resize-control';
 import NodeWrapper from '@/pages/app/components/app-flow/components/node-wrapper';
 import { getVariableTypeLabel } from '@/pages/app/variables';
-import { NodeType, StartNodeType } from '@/types/app.types';
+import { FlowNode, StartNode } from '@/types/app.types';
 import { Handle, Position } from '@xyflow/react';
 import { Flex, Space, theme } from 'antd';
 import { memo } from 'react';
 import styles from './styles.less';
 
 const { useToken } = theme;
-export default memo((node: NodeType<StartNodeType>) => {
+export default memo((node: FlowNode<StartNode>) => {
   const { token } = useToken();
   // 获取变量数据
   const variables = node.data.input || [];

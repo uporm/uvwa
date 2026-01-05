@@ -9,7 +9,7 @@ import {
   setSelectedNode,
   updateNode,
 } from '@/stores/app-flow.store';
-import { EdgeType, NodeType } from '@/types/app.types';
+import { FlowEdge, FlowNode } from '@/types/app.types';
 import {
   addEdge,
   applyEdgeChanges,
@@ -39,7 +39,7 @@ export const useApp = () => {
         return;
       }
       const currentNodes = deepClone(appContentSnap.nodes as Node[]);
-      const newNodes = applyNodeChanges(changes, currentNodes) as NodeType<any>[];
+      const newNodes = applyNodeChanges(changes, currentNodes) as FlowNode<any>[];
 
       // 如果当前有节点但新的结果为空，且不是明确的删除操作，则忽略
       if (currentNodes.length > 0 && newNodes.length === 0) {
@@ -61,7 +61,7 @@ export const useApp = () => {
           // 找到对应的节点并更新 selectedNode
           const selectedNode = currentNodes.find((node) => node.id === selectedChange.id);
           if (selectedNode) {
-            setSelectedNode(selectedNode as NodeType<any>);
+            setSelectedNode(selectedNode as FlowNode<any>);
           }
         } else {
           // 如果没有节点被选中，清空 selectedNode
@@ -86,14 +86,14 @@ export const useApp = () => {
 
   const onEdgesChange = useCallback(
     (changes: EdgeChange[]) => {
-      setEdges(applyEdgeChanges(changes, appContentSnap.edges as Edge[]) as EdgeType<any>[]);
+      setEdges(applyEdgeChanges(changes, appContentSnap.edges as Edge[]) as FlowEdge<any>[]);
     },
     [appContentSnap.edges],
   );
 
   const onConnect = useCallback(
     (connection: Connection) => {
-      setEdges(addEdge(connection, appContentSnap.edges as EdgeType<any>[]));
+      setEdges(addEdge(connection, appContentSnap.edges as FlowEdge<any>[]));
     },
     [appContentSnap.edges],
   );
@@ -104,7 +104,7 @@ export const useApp = () => {
       setHoveredNodeId(null);
 
       // 获取拖拽节点的所有子节点ID
-      const childrenIds = getAllChildrenIds(draggedNode.id, appContentSnap.nodes as readonly NodeType<any>[]);
+      const childrenIds = getAllChildrenIds(draggedNode.id, appContentSnap.nodes as readonly FlowNode<any>[]);
       const intersectingNodes = getIntersectingNodes(draggedNode).filter(
         (node) =>
           NodeDefineTypes[node.type!]?.defaultConfig?.data.group === true &&
@@ -122,7 +122,7 @@ export const useApp = () => {
       console.log('onNodeDragStop', draggedNode);
       setDropNodeIds([]);
       // 获取拖拽节点的所有子节点ID
-      const childrenIds = getAllChildrenIds(draggedNode.id, appContentSnap.nodes as readonly NodeType<any>[]);
+      const childrenIds = getAllChildrenIds(draggedNode.id, appContentSnap.nodes as readonly FlowNode<any>[]);
       const intersectingNodes = getIntersectingNodes(draggedNode).filter(
         (node) =>
           NodeDefineTypes[node.type!]?.defaultConfig?.data.group === true &&

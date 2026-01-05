@@ -1,16 +1,16 @@
-import { NodeType } from '@/types/app.types';
+import { FlowNode } from '@/types/app.types';
 import { Node } from '@xyflow/react';
 
 // 确保父节点在子节点之前的排序函数（高性能、稳定顺序）
-export const sortNodes = (nodes: NodeType<any>[]) => {
+export const sortNodes = (nodes: FlowNode<any>[]) => {
   if (nodes.length === 0) return [];
 
   // 构建 map: id -> node
-  const nodeMap = new Map<string, NodeType<any>>();
+  const nodeMap = new Map<string, FlowNode<any>>();
   nodes.forEach((n) => nodeMap.set(n.id, n));
 
   // 构建 parentId -> children
-  const childrenMap = new Map<string, NodeType<any>[]>();
+  const childrenMap = new Map<string, FlowNode<any>[]>();
   nodes.forEach((n) => {
     if (n.parentId) {
       if (!childrenMap.has(n.parentId)) {
@@ -21,9 +21,9 @@ export const sortNodes = (nodes: NodeType<any>[]) => {
   });
 
   const visited = new Set<string>();
-  const result: NodeType<any>[] = [];
+  const result: FlowNode<any>[] = [];
 
-  function dfs(node: NodeType<any>) {
+  function dfs(node: FlowNode<any>) {
     if (visited.has(node.id)) return;
     visited.add(node.id);
 
@@ -46,7 +46,7 @@ export const sortNodes = (nodes: NodeType<any>[]) => {
 };
 
 // 获取节点的所有子节点（包括嵌套的子节点）
-export const getAllChildrenIds = (nodeId: string, nodes: readonly NodeType<any>[]): string[] => {
+export const getAllChildrenIds = (nodeId: string, nodes: readonly FlowNode<any>[]): string[] => {
   const childrenIds: string[] = [];
 
   // 使用 Map 优化查找性能

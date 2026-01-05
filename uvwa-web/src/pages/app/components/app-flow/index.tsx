@@ -7,7 +7,7 @@ import AttributePanel from '@/pages/app/components/app-flow/components/attribute
 import ContextMenu from '@/pages/app/components/app-flow/components/context-menu';
 import { useApp } from '@/pages/app/hooks/useApp';
 import { NODE_TYPE, NodeDefineTypes } from '@/pages/app/nodeTypes';
-import { AppType } from '@/types/app.types';
+import { App } from '@/types/app.types';
 import { CaretRightOutlined, ClockCircleOutlined, LeftOutlined, PicRightOutlined, SafetyOutlined } from '@ant-design/icons';
 import {
   Background,
@@ -29,11 +29,11 @@ import ZoomBar from './components/zoom-bar';
 import RedoBar from '@/pages/app/components/app-flow/components/redo-bar';
 
 const { useToken } = theme;
-const { Text, Paragraph } = Typography;
+const { Text } = Typography;
 
 interface AppFlowProps {
   open: boolean;
-  app?: AppType;
+  app?: App;
   onClose?: () => void;
   onSave?: () => void;
 }
@@ -59,9 +59,18 @@ const AppFlow: React.FC<AppFlowProps> = memo(({ app, open, onClose, onSave }) =>
 
   return (
     <Drawer
+      open={open}
+      placement={'right'}
+      mask={false}
       onClose={onClose}
       closeIcon={<LeftOutlined style={{ fontSize: '20px' }} />}
-      styles={{ header: { backgroundColor: '#fafafa', padding: '8px' }, body: { padding: '0px' } }}
+      styles={{
+        wrapper: {
+          width: '100vw', // 使用视口宽度确保 100%
+        },
+        header: { backgroundColor: '#fafafa', padding: '8px' },
+        body: { padding: '0px' },
+      }}
       destroyOnHidden
       title={
         <Flex align="center" gap={4}>
@@ -79,10 +88,6 @@ const AppFlow: React.FC<AppFlowProps> = memo(({ app, open, onClose, onSave }) =>
           </Flex>
         </Flex>
       }
-      open={open}
-      width="100%"
-      placement={'right'}
-      mask={false}
       extra={
         <Flex gap={14}>
           <Flex
@@ -97,12 +102,12 @@ const AppFlow: React.FC<AppFlowProps> = memo(({ app, open, onClose, onSave }) =>
             <Button type="text" icon={<CaretRightOutlined />}>
               预览
             </Button>
-            <Divider type={'vertical'} size="small" style={{ marginInline: 2 }} />
+            <Divider orientation="vertical" size="small" style={{ marginInline: 2 }} />
             <Tooltip placement="bottomLeft" title="运行历史">
               <Button type="text" icon={<PicRightOutlined />} />
             </Tooltip>
 
-            <Divider type={'vertical'} size="small" style={{ marginInline: 2 }} />
+            <Divider orientation="vertical" size="small" style={{ marginInline: 2 }} />
             <Badge count={2} color="#faad14">
               <Tooltip placement="bottomLeft" title="检查清单">
                 <Button type="text" icon={<SafetyOutlined />} />
@@ -211,7 +216,7 @@ const EditFlowContent: React.FC = memo(() => {
       >
         <AttributePanel />
         <ZoomBar />
-        <RedoBar/>
+        <RedoBar />
         <ActionBar />
 
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />

@@ -4,7 +4,7 @@ import VariableTypeSelect from '@/components/variable-type-select';
 import { VARIABLE_TYPES } from '@/constants/app';
 import { getAvailableVariables } from '@/pages/app/variables';
 import { flowContentState } from '@/stores/app-flow.store';
-import { EdgeType, NodeType, SqlNodeType } from '@/types/app.types';
+import { FlowEdge, FlowNode, SqlNode } from '@/types/app.types';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Flex, Form, Input, List } from 'antd';
 import { useEffect, useMemo } from 'react';
@@ -12,8 +12,8 @@ import { useSnapshot } from 'valtio';
 import './styles.less';
 
 interface SqlNodeProps {
-  node: NodeType<SqlNodeType>;
-  onChange: (node: NodeType<SqlNodeType>) => void;
+  node: FlowNode<SqlNode>;
+  onChange: (node: FlowNode<SqlNode>) => void;
 }
 
 export default ({ node, onChange }: SqlNodeProps) => {
@@ -35,10 +35,10 @@ export default ({ node, onChange }: SqlNodeProps) => {
 
   // 表单值变化处理
   const onValuesChange = (changedValues: any, allValues: any) => {
-    const updatedData: SqlNodeType = {
+    const updatedData: SqlNode = {
       ...node.data,
       input: allValues.input || [],
-      content: allValues.content || '',
+      spec: allValues.content || '',
       output: [
         {
           id: 'rows',
@@ -67,8 +67,8 @@ export default ({ node, onChange }: SqlNodeProps) => {
   const availableVariables = useMemo(() => {
     return getAvailableVariables(
       node.id,
-      flowContentSnap.nodes as NodeType<SqlNodeType>[],
-      flowContentSnap.edges as EdgeType<any>[],
+      flowContentSnap.nodes as FlowNode<SqlNode>[],
+      flowContentSnap.edges as FlowEdge<any>[],
     );
   }, [node.id, flowContentSnap.nodes, flowContentSnap.edges]);
 

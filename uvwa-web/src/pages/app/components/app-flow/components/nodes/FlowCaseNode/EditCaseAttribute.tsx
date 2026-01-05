@@ -1,6 +1,6 @@
 import { getAvailableVariables } from '@/pages/app/variables';
 import { flowContentState } from '@/stores/app-flow.store';
-import { Case, CaseNodeType, EdgeType, NodeType } from '@/types/app.types';
+import { Case, CaseNode, FlowEdge, FlowNode } from '@/types/app.types';
 import { newId } from '@/utils/id';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, List } from 'antd';
@@ -9,8 +9,8 @@ import EditCaseItem from './EditCaseItem';
 import './styles.less';
 
 interface EditCaseAttributeProps {
-  node: NodeType<CaseNodeType>;
-  onChange: (node: NodeType<CaseNodeType>) => void;
+  node: FlowNode<CaseNode>;
+  onChange: (node: FlowNode<CaseNode>) => void;
 }
 
 const EditCaseAttribute: React.FC<EditCaseAttributeProps> = ({ node, onChange }) => {
@@ -18,8 +18,8 @@ const EditCaseAttribute: React.FC<EditCaseAttributeProps> = ({ node, onChange })
   const flowContentSnap = useSnapshot(flowContentState);
   const availableVariables = getAvailableVariables(
     node.id,
-    flowContentSnap.nodes as NodeType<any>[],
-    flowContentSnap.edges as EdgeType<any>[],
+    flowContentSnap.nodes as FlowNode<any>[],
+    flowContentSnap.edges as FlowEdge<any>[],
   );
 
   const cases = node.data.cases || [];

@@ -5,7 +5,7 @@ import {
   VARIABLE_TYPES,
 } from '@/constants/app';
 import { NodeDefineTypes } from '@/pages/app/nodeTypes';
-import { EdgeType, NodeType, Variable, VariableKind, VariableNode } from '@/types/app.types';
+import { FlowEdge, FlowNode, Variable, VariableKind, VariableNode } from '@/types/app.types';
 import { Node } from '@xyflow/react';
 
 /**
@@ -18,16 +18,16 @@ import { Node } from '@xyflow/react';
  */
 const getPreviousNodes = (
   nodeId: string,
-  edges: EdgeType<any>[],
-  nodes: NodeType<any>[],
+  edges: FlowEdge<any>[],
+  nodes: FlowNode<any>[],
   visited: Set<string> = new Set(),
-): NodeType<any>[] => {
+): FlowNode<any>[] => {
   if (visited.has(nodeId)) {
     return [];
   }
 
   visited.add(nodeId);
-  const previousNodes: NodeType<any>[] = [];
+  const previousNodes: FlowNode<any>[] = [];
 
   // 查找所有指向当前节点的边
   const incomingEdges = edges.filter((edge) => edge.target === nodeId);
@@ -64,8 +64,8 @@ export interface AvailableVariable {
  */
 export const getAvailableVariables = (
   currentNodeId: string,
-  nodes: NodeType<any>[],
-  edges: EdgeType<any>[],
+  nodes: FlowNode<any>[],
+  edges: FlowEdge<any>[],
 ): AvailableVariable[] => {
   const variablesWithNode: AvailableVariable[] = [];
 

@@ -1,33 +1,32 @@
-import CaseNode from '@/pages/app/components/app-flow/components/nodes/CaseNode';
-import EditCaseAttribute from '@/pages/app/components/app-flow/components/nodes/CaseNode/EditCaseAttribute';
-import CodeNode from '@/pages/app/components/app-flow/components/nodes/CodeNode';
-import EditCodeAttribute from '@/pages/app/components/app-flow/components/nodes/CodeNode/EditCodeAttribute';
-import CommentNode from '@/pages/app/components/app-flow/components/nodes/CommentNode';
-import EndNode from '@/pages/app/components/app-flow/components/nodes/EndNode';
-import EditEndAttribute from '@/pages/app/components/app-flow/components/nodes/EndNode/EditEndAttribute';
-import GroupStartNode from '@/pages/app/components/app-flow/components/nodes/GroupStartNode';
-import LoopBreakNode from '@/pages/app/components/app-flow/components/nodes/LoopBreakNode';
-import LoopContinueNode from '@/pages/app/components/app-flow/components/nodes/LoopContinueNode';
-import LoopNode from '@/pages/app/components/app-flow/components/nodes/LoopNode';
-import EditLoopAttribute from '@/pages/app/components/app-flow/components/nodes/LoopNode/EditLoopAttribute';
-import SqlNode from '@/pages/app/components/app-flow/components/nodes/SqlNode';
-import EditSqlAttribute from '@/pages/app/components/app-flow/components/nodes/SqlNode/EditSqlAttribute';
-import SqlTransactionNode from '@/pages/app/components/app-flow/components/nodes/SqlTransactionNode';
-import EditSqlTransactionAttribute from '@/pages/app/components/app-flow/components/nodes/SqlTransactionNode/EditSqlTransactionAttribute';
-import StartNode from '@/pages/app/components/app-flow/components/nodes/StartNode';
-import EditStartAttribute from '@/pages/app/components/app-flow/components/nodes/StartNode/EditStartAttribute';
+import FlowCaseNode from '@/pages/app/components/app-flow/components/nodes/FlowCaseNode';
+import EditCaseAttribute from '@/pages/app/components/app-flow/components/nodes/FlowCaseNode/EditCaseAttribute';
+import FlowCodeNode from '@/pages/app/components/app-flow/components/nodes/FlowCodeNode';
+import EditCodeAttribute from '@/pages/app/components/app-flow/components/nodes/FlowCodeNode/EditCodeAttribute';
+import FlowEndNode from '@/pages/app/components/app-flow/components/nodes/FlowEndNode';
+import EditEndAttribute from '@/pages/app/components/app-flow/components/nodes/FlowEndNode/EditEndAttribute';
+import FlowGroupStartNode from '@/pages/app/components/app-flow/components/nodes/FlowGroupStartNode';
+import LoopBreakNode from '@/pages/app/components/app-flow/components/nodes/FlowLoopBreakNode';
+import LoopContinueNode from '@/pages/app/components/app-flow/components/nodes/FlowLoopContinueNode';
+import FlowLoopNode from '@/pages/app/components/app-flow/components/nodes/FlowLoopNode';
+import EditLoopAttribute from '@/pages/app/components/app-flow/components/nodes/FlowLoopNode/EditLoopAttribute';
+import FlowSqlNode from '@/pages/app/components/app-flow/components/nodes/FlowSqlNode';
+import EditSqlAttribute from '@/pages/app/components/app-flow/components/nodes/FlowSqlNode/EditSqlAttribute';
+import FlowSqlTransactionNode from '@/pages/app/components/app-flow/components/nodes/FlowSqlTransactionNode';
+import EditSqlTransactionAttribute from '@/pages/app/components/app-flow/components/nodes/FlowSqlTransactionNode/EditSqlTransactionAttribute';
+import FlowStartNode from '@/pages/app/components/app-flow/components/nodes/FlowStartNode';
+import EditStartAttribute from '@/pages/app/components/app-flow/components/nodes/FlowStartNode/EditStartAttribute';
 import {
-  CaseNodeType,
-  CodeNodeType,
-  EndNodeType,
-  LoopNodeType,
-  NodeDefineType,
-  NodeType,
-  NoteNodeType,
-  SqlNodeType,
-  SqlTransactionNodeType,
-  StartNodeType,
-  SubFlowNodeType,
+  CaseNode,
+  CodeNode,
+  EndNode,
+  LoopNode,
+  FlowNodeDefine,
+  FlowNode,
+  NoteNode,
+  SqlNode,
+  SqlTransactionNode,
+  StartNode,
+  SubFlowNode,
 } from '@/types/app.types'; // 节点类型 key 常量
 import { ObjectType } from '@/types/common.types';
 import { newId } from '@/utils/id';
@@ -49,11 +48,11 @@ export const NODE_TYPE = {
   NOTE: 'note',
 } as const;
 
-export const NodeDefineTypes: ObjectType<NodeDefineType> = {
+export const NodeDefineTypes: ObjectType<FlowNodeDefine> = {
   [NODE_TYPE.START]: {
     category: '输入&输出',
     icon: 'icon-start',
-    renderComponent: StartNode,
+    renderComponent: FlowStartNode,
     attributeEditor: EditStartAttribute,
     defaultConfig: {
       id: newId(),
@@ -65,12 +64,12 @@ export const NodeDefineTypes: ObjectType<NodeDefineType> = {
         input: [],
         group: false,
       },
-    } as NodeType<StartNodeType>,
+    } as FlowNode<StartNode>,
   },
   [NODE_TYPE.END]: {
     category: '输入&输出',
     icon: 'icon-start',
-    renderComponent: EndNode,
+    renderComponent: FlowEndNode,
     attributeEditor: EditEndAttribute,
     defaultConfig: {
       id: newId(),
@@ -87,12 +86,12 @@ export const NodeDefineTypes: ObjectType<NodeDefineType> = {
         },
         group: false,
       },
-    } as NodeType<EndNodeType>,
+    } as FlowNode<EndNode>,
   },
   [NODE_TYPE.CASE]: {
     category: '业务逻辑',
     icon: 'icon-case',
-    renderComponent: CaseNode,
+    renderComponent: FlowCaseNode,
     attributeEditor: EditCaseAttribute,
     defaultConfig: {
       id: '',
@@ -104,12 +103,12 @@ export const NodeDefineTypes: ObjectType<NodeDefineType> = {
         cases: [{ id: newId(), opr: 'and', conditions: [] }],
         group: false,
       },
-    } as NodeType<CaseNodeType>,
+    } as FlowNode<CaseNode>,
   },
   [NODE_TYPE.LOOP]: {
     category: '业务逻辑',
     icon: 'icon-loop',
-    renderComponent: LoopNode,
+    renderComponent: FlowLoopNode,
     attributeEditor: EditLoopAttribute,
     defaultConfig: {
       id: newId(),
@@ -122,12 +121,12 @@ export const NodeDefineTypes: ObjectType<NodeDefineType> = {
         group: true,
         expanded: true,
       },
-    } as NodeType<LoopNodeType>,
+    } as FlowNode<LoopNode>,
   },
   [NODE_TYPE.GROUP_START]: {
     category: '业务逻辑',
     icon: 'icon-start',
-    renderComponent: GroupStartNode,
+    renderComponent: FlowGroupStartNode,
     defaultConfig: {
       id: newId(),
       type: NODE_TYPE.GROUP_START,
@@ -136,7 +135,7 @@ export const NodeDefineTypes: ObjectType<NodeDefineType> = {
       height: 30,
       draggable: false,
       data: { group: false },
-    } as NodeType<any>,
+    } as FlowNode<any>,
   },
   [NODE_TYPE.LOOP_CONTINUE]: {
     category: '业务逻辑',
@@ -148,7 +147,7 @@ export const NodeDefineTypes: ObjectType<NodeDefineType> = {
       position: { x: 0, y: 0 },
       width: 150,
       data: { title: '继续循环', group: false },
-    } as NodeType<any>,
+    } as FlowNode<any>,
   },
   [NODE_TYPE.LOOP_BREAK]: {
     category: '业务逻辑',
@@ -160,12 +159,12 @@ export const NodeDefineTypes: ObjectType<NodeDefineType> = {
       position: { x: 0, y: 0 },
       width: 150,
       data: { title: '终止循环', group: false },
-    } as NodeType<any>,
+    } as FlowNode<any>,
   },
   [NODE_TYPE.CODE]: {
     category: '业务逻辑',
     icon: 'icon-code',
-    renderComponent: CodeNode,
+    renderComponent: FlowCodeNode,
     attributeEditor: EditCodeAttribute,
     defaultConfig: {
       id: newId(),
@@ -174,12 +173,12 @@ export const NodeDefineTypes: ObjectType<NodeDefineType> = {
       data: {
         title: '代码执行',
       },
-    } as NodeType<CodeNodeType>,
+    } as FlowNode<CodeNode>,
   },
   [NODE_TYPE.SQL]: {
     category: '数据库',
     icon: 'icon-sql',
-    renderComponent: SqlNode,
+    renderComponent: FlowSqlNode,
     attributeEditor: EditSqlAttribute,
     defaultConfig: {
       id: '',
@@ -188,12 +187,12 @@ export const NodeDefineTypes: ObjectType<NodeDefineType> = {
       data: {
         title: 'SQL脚本',
       },
-    } as NodeType<SqlNodeType>,
+    } as FlowNode<SqlNode>,
   },
   [NODE_TYPE.SQL_TRANSACTION]: {
     category: '数据库',
     icon: 'icon-sql-transaction',
-    renderComponent: SqlTransactionNode,
+    renderComponent: FlowSqlTransactionNode,
     attributeEditor: EditSqlTransactionAttribute,
     defaultConfig: {
       id: '',
@@ -206,12 +205,12 @@ export const NodeDefineTypes: ObjectType<NodeDefineType> = {
         group: true,
         expanded: true,
       },
-    } as NodeType<SqlTransactionNodeType>,
+    } as FlowNode<SqlTransactionNode>,
   },
   [NODE_TYPE.SUBFLOW]: {
     category: '业务逻辑',
     icon: 'icon-subflow',
-    renderComponent: CodeNode,
+    renderComponent: FlowCodeNode,
     defaultConfig: {
       id: '',
       type: NODE_TYPE.SUBFLOW,
@@ -219,12 +218,12 @@ export const NodeDefineTypes: ObjectType<NodeDefineType> = {
       data: {
         title: '子流程',
       },
-    } as NodeType<SubFlowNodeType>,
+    } as FlowNode<SubFlowNode>,
   },
   [NODE_TYPE.ASSIGN]: {
     category: '业务逻辑',
     icon: 'icon-assign',
-    renderComponent: CodeNode,
+    renderComponent: FlowCodeNode,
     defaultConfig: {
       id: '',
       type: NODE_TYPE.ASSIGN,
@@ -233,22 +232,6 @@ export const NodeDefineTypes: ObjectType<NodeDefineType> = {
         title: '变量赋值',
         group: false,
       },
-    } as NodeType<any>,
-  },
-  [NODE_TYPE.NOTE]: {
-    category: '其他',
-    icon: 'icon-file',
-    renderComponent: CommentNode,
-    defaultConfig: {
-      id: '',
-      type: NODE_TYPE.NOTE,
-      position: { x: 0, y: 0 },
-      width: 200,
-      height: 80,
-      data: {
-        title: '注释',
-        content: '请输入注释内容...',
-      },
-    } as NodeType<NoteNodeType>,
+    } as FlowNode<any>,
   },
 };

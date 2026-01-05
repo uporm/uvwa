@@ -1,7 +1,7 @@
 import TagsModal from '@/components/tag-modal';
 import { APP_TYPES } from '@/constants/app';
 import { addTag, appState, editTag, fetchApps, removeTag, setEditApp } from '@/stores/app.store';
-import { TagType } from '@/types/sys.types';
+import { WorkspaceTag } from '@/types/workspace.types';
 import { PlusOutlined, SearchOutlined, TagOutlined } from '@ant-design/icons';
 import { Button, Divider, Flex, Form, Input, Segmented, Select, Space } from 'antd';
 import React, { useMemo, useState } from 'react';
@@ -32,7 +32,7 @@ const AppSearch: React.FC = () => {
             style={{ width: '300px' }}
             shape={'round'}
             options={APP_TYPES}
-            onChange={(value) => fetchApps({ type: value })}
+            onChange={(value) => fetchApps({ appType: value })}
           />
         </Form.Item>
         <Space>
@@ -77,7 +77,7 @@ const AppSearch: React.FC = () => {
               }}
             />
           </Form.Item>
-          <Divider type="vertical" />
+          <Divider orientation="vertical" />
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -90,7 +90,7 @@ const AppSearch: React.FC = () => {
 
       <TagsModal
         open={tagOpen}
-        tags={(snap.tags.data as TagType[]) || []}
+        tags={(snap.tags.data as WorkspaceTag[]) || []}
         onCancel={() => setTagOpen(false)}
         onAdd={(tag) => {
           addTag(tag);

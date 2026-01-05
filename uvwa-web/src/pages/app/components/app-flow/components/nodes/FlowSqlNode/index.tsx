@@ -1,9 +1,9 @@
 import GroupNodeWrapper from '@/pages/app/components/app-flow/components/group-node-wrapper';
-import { NodeType, SqlTransactionNodeType } from '@/types/app.types';
+import { FlowNode, SqlNode } from '@/types/app.types';
 import { Handle, Position } from '@xyflow/react';
 import { memo } from 'react';
 
-export default memo((node: NodeType<SqlTransactionNodeType>) => {
+export default memo((node: FlowNode<SqlNode>) => {
   return (
     <GroupNodeWrapper node={node}>
       <Handle type="source" position={Position.Right} />

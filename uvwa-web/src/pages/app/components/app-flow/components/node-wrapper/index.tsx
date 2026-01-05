@@ -1,7 +1,7 @@
 import IconFont from '@/components/icon-font';
 import { NodeDefineTypes } from '@/pages/app/nodeTypes';
 import { cloneNode, deleteNode, extendNode, setHoveredNodeId } from '@/stores/app-flow.store';
-import { NodeType } from '@/types/app.types';
+import { FlowNode } from '@/types/app.types';
 import { CopyOutlined, DeleteOutlined, DownCircleOutlined, EllipsisOutlined, UpCircleOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Button, Dropdown, Flex, Space, theme } from 'antd';
@@ -11,7 +11,7 @@ import styles from './styles.less';
 const { useToken } = theme;
 
 interface NodeWrapperProps {
-  node: NodeType<any>;
+  node: FlowNode<any>;
   children?: React.ReactNode;
 }
 

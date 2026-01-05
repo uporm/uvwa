@@ -3,16 +3,16 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Flex, List, Space, theme } from 'antd';
 import './styles.less';
 
-import EditStartDialog from '@/pages/app/components/app-flow/components/nodes/StartNode/EditStartDialog';
+import EditStartDialog from '@/pages/app/components/app-flow/components/nodes/FlowStartNode/EditStartDialog';
 import { getVariableTypeLabel } from '@/pages/app/variables';
-import { NodeType, StartNodeType, Variable } from '@/types/app.types';
+import { FlowNode, StartNode, Variable } from '@/types/app.types';
 import { useState } from 'react';
 
 const { useToken } = theme;
 
 interface StartNodeProps {
-  node: NodeType<StartNodeType>;
-  onChange: (node: NodeType<StartNodeType>) => void;
+  node: FlowNode<StartNode>;
+  onChange: (node: FlowNode<StartNode>) => void;
 }
 
 export default ({ node, onChange }: StartNodeProps) => {

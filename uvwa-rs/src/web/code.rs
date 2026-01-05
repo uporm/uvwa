@@ -62,6 +62,8 @@ pub enum Code {
     // 工作空间相关
     // 不能删除当前工作空间
     WorkspaceCurrentCannotDelete = 3301,
+    // 未选择工作空间
+    WorkspaceNotSelected = 3302,
 }
 
 impl From<Code> for i32 {

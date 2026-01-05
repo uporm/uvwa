@@ -12,6 +12,7 @@ mod models;
 mod routes;
 mod utils;
 mod web;
+mod core;
 
 mapper_assets!["resources/mappers"];
 // 初始化翻译文件

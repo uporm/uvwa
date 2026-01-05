@@ -18,14 +18,7 @@ pub async fn get_folder_tree(ctx: Context, Path(folder_type): Path<i32>) -> R<Ve
     let workspace_id = ctx.workspace_id;
 
     let mut folders = r!(FolderDao::list(tenant_id, workspace_id, folder_type).await);
-
-    // If no folders, create default one
-    if folders.is_empty() {
-        let folder = Folder::new(tenant_id, workspace_id, folder_type);
-        r!(FolderDao::insert(&folder).await);
-        folders = r!(FolderDao::list(tenant_id, workspace_id, folder_type).await);
-    }
-
+    
     let folder_resps: Vec<FolderResp> = folders.into_iter().map(|f| f.into()).collect();
     let tree = build_folder_tree(folder_resps);
     R::ok(tree)

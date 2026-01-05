@@ -16,6 +16,7 @@ pub struct WorkspaceResp {
     pub id: u64,
     pub name: String,
     pub description: Option<String>,
+    pub selected: bool,
 }
 
 impl From<Workspace> for WorkspaceResp {
@@ -24,6 +25,7 @@ impl From<Workspace> for WorkspaceResp {
             id: workspace.id,
             name: workspace.name,
             description: workspace.description,
+            selected: false,
         }
     }
 }

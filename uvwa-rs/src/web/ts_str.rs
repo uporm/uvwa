@@ -21,6 +21,25 @@ where
     s.parse::<T>().map_err(serde::de::Error::custom)
 }
 
+pub fn to_option_number<'de, T, D>(d: D) -> Result<Option<T>, D::Error>
+where
+    T: FromStr,
+    T::Err: Display,
+    D: Deserializer<'de>,
+{
+    let opt = Option::<String>::deserialize(d)?;
+    match opt.as_deref() {
+        None => Ok(None),
+        Some("") => Ok(None),
+        Some("null") => Ok(None),
+        Some(s) => s
+            .parse::<T>()
+            .map(Some)
+            .map_err(serde::de::Error::custom),
+        None => Ok(None),
+    }
+}
+
 pub fn vec_to_str<T, S>(x: &Vec<T>, s: S) -> Result<S::Ok, S::Error>
 where
     T: Display,

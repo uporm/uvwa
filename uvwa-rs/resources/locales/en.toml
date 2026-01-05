@@ -30,3 +30,4 @@
 
 ### Workspace
 3301 = "Cannot delete current workspace, Please switch to another workspace first."
+3302 = "No workspace selected, Please select a workspace first"

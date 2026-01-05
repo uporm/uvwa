@@ -50,7 +50,7 @@ pub struct FolderDao;
 
 impl FolderDao {
     #[sql("list")]
-    pub async fn list(tenant_id: u64, workspace_id: u64, type_: i32) -> uorm::Result<Vec<Folder>> {
+    pub async fn list(tenant_id: u64, workspace_id: u64, folder_type: i32) -> uorm::Result<Vec<Folder>> {
         exec!()
     }
 

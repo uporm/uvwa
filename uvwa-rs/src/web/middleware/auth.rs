@@ -17,8 +17,19 @@ pub async fn handle_auth(mut req: Request, next: Next) -> Response {
         return e;
     }
 
+    let context = context.unwrap();
+    
+    // 检查是否为 workspace 模块的请求
+    let path = req.uri().path();
+    let is_workspace_request = path.starts_with("/uvwa/workspaces");
+    
+    // 如果不是 workspace 请求且 workspace_id 为 0，返回错误
+    if !is_workspace_request && context.workspace_id == 0 {
+        return workspace_not_selected_error().into_response();
+    }
+
     // 将上下文放入请求扩展中供后续处理器使用
-    req.extensions_mut().insert(context.unwrap());
+    req.extensions_mut().insert(context);
     next.run(req).await
 }
 
@@ -33,12 +44,22 @@ async fn extract_context(headers: &HeaderMap) -> Result<Context, R<()>> {
     Ok(Context {
         tenant_id,
         user_id,
-        workspace_id,
+        workspace_id: workspace_id.unwrap_or_default(),
     })
 }
 
 fn unauthorized_error() -> R<()> {
     let code: i32 = Code::Unauthorized.into();
+    let key = code.to_string();
+    R {
+        code,
+        message: t!(&key).to_string(),
+        data: None,
+    }
+}
+
+fn workspace_not_selected_error() -> R<()> {
+    let code: i32 = Code::WorkspaceNotSelected.into();
     let key = code.to_string();
     R {
         code,

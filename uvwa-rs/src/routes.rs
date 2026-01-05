@@ -45,6 +45,10 @@ fn workspace_routes() -> Router {
             "/workspaces/{id}",
             delete(workspace_handler::delete_workspace),
         )
+        .route(
+            "/workspaces/{id}/current",
+            put(workspace_handler::switch_workspace),
+        )
 }
 
 // Folder routes
@@ -90,7 +94,7 @@ fn app_routes() -> Router {
         .route("/apps/{id}", delete(app_handler::delete_app))
         .route("/apps/{id}/draft", get(app_handler::get_app_draft))
         .route("/apps/{id}/draft", put(app_handler::update_app_draft))
-        .route("/apps/{id}/tags", put(app_handler::update_app_tags))
         .route("/apps/{id}/clone", post(app_handler::clone_app))
         .route("/apps/{id}/release", post(app_handler::release_app))
+        .route("/apps/{id}/tags", put(app_handler::update_app_tags))
 }

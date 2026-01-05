@@ -62,7 +62,7 @@ pub struct AppVersionSpec {
     pub id: u64,
     pub tenant_id: u64,
     pub workspace_id: u64,
-    pub app_release_id: u64,
+    pub app_version_id: u64,
     pub spec: String,
 }
 

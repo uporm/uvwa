@@ -188,6 +188,7 @@ pub async fn clone_app(ctx: Context, Path(id): Path<u64>, Json(req): Json<AppClo
     R::void()
 }
 
+#[transaction]
 pub async fn release_app(
     ctx: Context,
     Path(id): Path<u64>,
@@ -228,7 +229,7 @@ pub async fn release_app(
         id: Id::next_id().unwrap(),
         tenant_id: ctx.tenant_id,
         workspace_id: ctx.workspace_id,
-        app_release_id: release_id,
+        app_version_id: release_id,
         spec: content_str,
     };
     r!(AppDao::insert_version_spec(&version_spec).await);

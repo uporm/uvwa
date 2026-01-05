@@ -113,7 +113,7 @@
 
     <select id="getDraft">
         select id, tenant_id, workspace_id, app_id, spec
-        from app_content
+        from app_draft
         where app_id = #{appId}
         and tenant_id = #{tenantId}
         and workspace_id = #{workspaceId}
@@ -150,8 +150,8 @@
     </insert>
 
     <insert id="insertVersionSpec">
-        insert into app_version_spec (id, tenant_id, workspace_id, app_version_id, spec)
-        values (#{id}, #{tenantId}, #{workspaceId}, #{appVersionId}, #{spec})
+        insert into app_version_spec (id, tenant_id, workspace_id, app_version_id, spec, create_at)
+        values (#{id}, #{tenantId}, #{workspaceId}, #{appVersionId}, #{spec}, now())
     </insert>
 
     <delete id="deleteVersions">

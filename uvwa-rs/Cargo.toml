@@ -24,3 +24,5 @@ sonyflake= "0.4.0"
 thiserror = "2.0.17"
 rust-i18n = "3.1.5"
 moka = { version = "0.12.12", features = ["future"] }
+inventory= "0.3.21"
+async-trait = "0.1.89"

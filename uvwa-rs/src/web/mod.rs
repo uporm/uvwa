@@ -1,4 +1,3 @@
-pub mod code;
 pub mod error;
 pub mod extract;
 pub mod middleware;

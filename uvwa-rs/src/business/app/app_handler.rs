@@ -7,7 +7,6 @@ use crate::models::app::{
 use crate::models::context::Context;
 use crate::r;
 use crate::utils::id::Id;
-use crate::web::code::Code;
 use crate::web::error::WebError;
 use crate::web::extract::Json;
 use crate::web::r::R;
@@ -15,6 +14,7 @@ use axum::extract::{Path, Query};
 use serde_json;
 use uorm::transaction;
 use validator::Validate;
+use crate::core::code::Code;
 
 // 查询应用列表
 pub async fn list_apps(ctx: Context, Query(req): Query<AppReq>) -> R<Vec<AppResp>> {

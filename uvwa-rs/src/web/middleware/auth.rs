@@ -1,12 +1,12 @@
 use crate::business::cache::workspace_cache;
 use crate::models::context::Context;
-use crate::web::code::Code;
 use crate::web::r::R;
 use axum::extract::Request;
 use axum::http::HeaderMap;
 use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
 use rust_i18n::t;
+use crate::core::code::Code;
 
 /// 认证中间件：从 header 中提取租户 ID、用户 ID、工作空间 ID
 pub async fn handle_auth(mut req: Request, next: Next) -> Response {

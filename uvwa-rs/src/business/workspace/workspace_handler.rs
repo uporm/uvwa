@@ -1,10 +1,10 @@
 use crate::business::cache::workspace_cache;
 use crate::business::workspace::workspace_consumer::WorkspaceConsumer;
 use crate::business::workspace::workspace_dao::{Workspace, WorkspaceDao};
+use crate::core::code::Code;
 use crate::models::context::Context;
 use crate::models::workspace::{WorkspaceReq, WorkspaceResp};
 use crate::r;
-use crate::web::code::Code;
 use crate::web::error::WebError;
 use crate::web::extract::Json;
 use crate::web::r::R;
@@ -30,7 +30,7 @@ pub async fn list_workspaces(ctx: Context) -> R<Vec<WorkspaceResp>> {
     // 标记选中的工作空间
     let cached_id = workspace_cache::get_workspace_id(ctx.user_id).await;
     let selected_id = cached_id.or_else(|| workspaces.first().map(|w| w.id));
-    
+
     if let Some(id) = selected_id {
         if let Some(workspace) = workspaces.iter_mut().find(|w| w.id == id) {
             workspace.selected = true;

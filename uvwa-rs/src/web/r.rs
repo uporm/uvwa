@@ -3,7 +3,7 @@ use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use serde::Serialize;
 
-use crate::web::code::Code;
+use crate::core::code::Code;
 use crate::web::error::WebError;
 use rust_i18n::t;
 use tracing::{debug, error};
@@ -122,10 +122,15 @@ fn format_validation_errors(err: &ValidationErrors) -> String {
                     let max = e.params.get("max").map(|v| v.to_string());
                     match (min, max) {
                         (Some(min), Some(max)) => {
-                            t!(Code::ValidationLengthBetween.to_string(), min => min, max => max).to_string()
+                            t!(Code::ValidationLengthBetween.to_string(), min => min, max => max)
+                                .to_string()
                         }
-                        (Some(min), None) => t!(Code::ValidationLengthMin.to_string(), min => min).to_string(),
-                        (None, Some(max)) => t!(Code::ValidationLengthMax.to_string(), max => max).to_string(),
+                        (Some(min), None) => {
+                            t!(Code::ValidationLengthMin.to_string(), min => min).to_string()
+                        }
+                        (None, Some(max)) => {
+                            t!(Code::ValidationLengthMax.to_string(), max => max).to_string()
+                        }
                         _ => t!(Code::ValidationLengthInvalid.to_string()).to_string(),
                     }
                 }
@@ -134,19 +139,22 @@ fn format_validation_errors(err: &ValidationErrors) -> String {
                     let max = e.params.get("max").map(|v| v.to_string());
                     match (min, max) {
                         (Some(min), Some(max)) => {
-                            t!(Code::ValidationRangeBetween.to_string(), min => min, max => max).to_string()
+                            t!(Code::ValidationRangeBetween.to_string(), min => min, max => max)
+                                .to_string()
                         }
-                        (Some(min), None) => t!(Code::ValidationRangeMin.to_string(), min => min).to_string(),
-                        (None, Some(max)) => t!(Code::ValidationRangeMax.to_string(), max => max).to_string(),
+                        (Some(min), None) => {
+                            t!(Code::ValidationRangeMin.to_string(), min => min).to_string()
+                        }
+                        (None, Some(max)) => {
+                            t!(Code::ValidationRangeMax.to_string(), max => max).to_string()
+                        }
                         _ => t!(Code::ValidationRangeInvalid.to_string()).to_string(),
                     }
                 }
                 "email" => t!(Code::ValidationEmail.to_string()).to_string(),
-                _ => e
-                    .message
-                    .clone()
-                    .map(|m| m.to_string())
-                    .unwrap_or_else(|| t!(Code::ValidationUnknown.to_string(), code => e.code).to_string()),
+                _ => e.message.clone().map(|m| m.to_string()).unwrap_or_else(|| {
+                    t!(Code::ValidationUnknown.to_string(), code => e.code).to_string()
+                }),
             };
             msgs.push(format!("{}: {}", field, detail));
         }
@@ -197,7 +205,7 @@ mod tests {
 
         let mut errs = ValidationErrors::new();
         errs.add("field1", ValidationError::new("required"));
-        
+
         let msg = format_validation_errors(&errs);
         assert!(msg.contains("is required"));
 
@@ -205,18 +213,18 @@ mod tests {
         rust_i18n::set_locale("zh");
         let msg_zh = format_validation_errors(&errs);
         assert!(msg_zh.contains("不能为空"));
-        
+
         // Test length
         let mut errs_len = ValidationErrors::new();
         let mut err_len = ValidationError::new("length");
         err_len.add_param(std::borrow::Cow::from("min"), &10);
         err_len.add_param(std::borrow::Cow::from("max"), &20);
         errs_len.add("field2", err_len);
-        
+
         rust_i18n::set_locale("en");
         let msg_len = format_validation_errors(&errs_len);
         assert!(msg_len.contains("length must be between 10 and 20"));
-        
+
         rust_i18n::set_locale("zh");
         let msg_len_zh = format_validation_errors(&errs_len);
         assert!(msg_len_zh.contains("长度必须在 10 和 20 之间"));

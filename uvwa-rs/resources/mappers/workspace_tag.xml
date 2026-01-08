@@ -3,39 +3,55 @@
 <mapper namespace="workspace_tag">
 
     <sql id="cols">
-        id, tenant_id, workspace_id, tag_type, name, create_at, update_at
+            id,
+            tenant_id,
+            workspace_id,
+            tag_type,
+            name,
+            create_at,
+            update_at
     </sql>
 
     <select id="list">
-        select
+        SELECT
         <include refid="cols"/>
-        from workspace_tag
-        where tenant_id = #{tenantId}
-        and workspace_id = #{workspaceId}
-        and tag_type = #{tagType}
+        FROM workspace_tag
+        WHERE tenant_id = #{tenantId}
+        AND workspace_id = #{workspaceId}
+        AND tag_type = #{tagType}
     </select>
 
     <insert id="insert">
-        insert into workspace_tag (id, tenant_id, workspace_id, tag_type, name, create_at, update_at)
-        values (#{id}, #{tenantId}, #{workspaceId}, #{tagType}, #{name}, now(), now())
+        INSERT INTO workspace_tag (id, tenant_id, workspace_id, tag_type, name, create_at, update_at)
+        VALUES (#{id}, #{tenantId}, #{workspaceId}, #{tagType}, #{name}, NOW(), NOW())
     </insert>
 
     <update id="update">
-        update workspace_tag
-        set name = #{name},
-            update_at = now()
-        where id = #{id}
-          and tenant_id = #{tenantId}
-          and workspace_id = #{workspaceId}
-          and tag_type = #{tagType}
+        UPDATE workspace_tag
+        SET name = #{name},
+        update_at = NOW()
+        WHERE id = #{id}
+        AND tenant_id = #{tenantId}
+        AND workspace_id = #{workspaceId}
+        AND tag_type = #{tagType}
     </update>
 
     <delete id="delete">
-        delete
-        from workspace_tag
-        where id = #{id}
-          and tenant_id = #{tenantId}
-          and workspace_id = #{workspaceId}
-          and tag_type = #{tagType}
+        DELETE
+        FROM workspace_tag
+        WHERE id = #{id}
+        AND tenant_id = #{tenantId}
+        AND workspace_id = #{workspaceId}
+        AND tag_type = #{tagType}
     </delete>
+
+    <select id="get">
+        SELECT
+        <include refid="cols"/>
+        FROM workspace_tag
+        WHERE id = #{id}
+        AND tenant_id = #{tenantId}
+        AND workspace_id = #{workspaceId}
+        AND tag_type = #{tagType}
+    </select>
 </mapper>

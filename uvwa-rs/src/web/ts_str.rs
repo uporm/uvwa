@@ -21,7 +21,7 @@ where
     s.parse::<T>().map_err(serde::de::Error::custom)
 }
 
-pub fn to_option_number<'de, T, D>(d: D) -> Result<Option<T>, D::Error>
+pub fn option_to_number<'de, T, D>(d: D) -> Result<Option<T>, D::Error>
 where
     T: FromStr,
     T::Err: Display,
@@ -32,11 +32,7 @@ where
         None => Ok(None),
         Some("") => Ok(None),
         Some("null") => Ok(None),
-        Some(s) => s
-            .parse::<T>()
-            .map(Some)
-            .map_err(serde::de::Error::custom),
-        None => Ok(None),
+        Some(s) => s.parse::<T>().map(Some).map_err(serde::de::Error::custom),
     }
 }
 
@@ -62,4 +58,23 @@ where
     seq.into_iter()
         .map(|s| s.parse::<T>().map_err(serde::de::Error::custom))
         .collect()
+}
+
+pub fn option_vec_to_number<'de, T, D>(d: D) -> Result<Option<Vec<T>>, D::Error>
+where
+    T: FromStr,
+    T::Err: Display,
+    D: Deserializer<'de>,
+{
+    let opt = Option::<Vec<String>>::deserialize(d)?;
+    match opt {
+        None => Ok(None),
+        Some(seq) => {
+            let result: Result<Vec<T>, _> = seq
+                .into_iter()
+                .map(|s| s.parse::<T>().map_err(serde::de::Error::custom))
+                .collect();
+            result.map(Some)
+        }
+    }
 }

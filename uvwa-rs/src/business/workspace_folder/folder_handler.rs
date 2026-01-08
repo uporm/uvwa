@@ -12,13 +12,13 @@ use axum::extract::Path;
 use std::collections::HashMap;
 use validator::Validate;
 
-// 查询文件夹树
+// 查询目录树
 pub async fn get_folder_tree(ctx: Context, Path(folder_type): Path<i32>) -> R<Vec<FolderResp>> {
     let tenant_id = ctx.tenant_id;
     let workspace_id = ctx.workspace_id;
 
-    let mut folders = r!(FolderDao::list(tenant_id, workspace_id, folder_type).await);
-    
+    let folders = r!(FolderDao::list(tenant_id, workspace_id, folder_type).await);
+
     let folder_resps: Vec<FolderResp> = folders.into_iter().map(|f| f.into()).collect();
     let tree = build_folder_tree(folder_resps);
     R::ok(tree)
@@ -45,7 +45,7 @@ fn build_recursive(parent_id: u64, map: &mut HashMap<u64, Vec<FolderResp>>) -> V
     children
 }
 
-// 创建文件夹
+// 创建目录
 pub async fn create_folder(
     ctx: Context,
     Path(folder_type): Path<i32>,
@@ -56,25 +56,16 @@ pub async fn create_folder(
     let workspace_id = ctx.workspace_id;
 
     // Check parent
-    if req.parent_id != 0 {
-        let parent = r!(FolderDao::get_by_id(tenant_id, workspace_id, req.parent_id).await);
-        if parent.is_none() {
-            return R::err(WebError::BizWithArgs(
-                Code::FolderParentNotExist.into(),
-                vec![],
-            ));
-        }
-    }
+    r!(validate_parent_exists(tenant_id, workspace_id, req.parent_id).await);
 
     let max_seq = r!(FolderDao::get_max_seq(tenant_id, workspace_id, req.parent_id).await);
     let seq = max_seq.unwrap_or(0) + 1;
 
     let mut folder = Folder::new(tenant_id, workspace_id, folder_type);
-    folder
-        .parent_id(req.parent_id)
-        .name(req.name)
-        .seq(seq)
-        .description(req.description);
+    folder.parent_id = req.parent_id;
+    folder.name = req.name;
+    folder.seq = seq;
+    folder.description = req.description;
 
     let id = r!(FolderDao::insert(&folder).await);
     R::ok(id.to_string())
@@ -90,9 +81,7 @@ pub async fn update_folder(
     let tenant_id = ctx.tenant_id;
     let workspace_id = ctx.workspace_id;
 
-    let Some(mut folder) = r!(FolderDao::get_by_id(tenant_id, workspace_id, id).await) else {
-        return R::err(WebError::BizWithArgs(Code::FolderNotExist.into(), vec![]));
-    };
+    let mut folder = r!(validate_folder_exists(tenant_id, workspace_id, id).await);
 
     folder.name = req.name;
     folder.description = req.description;
@@ -105,9 +94,7 @@ pub async fn delete_folder(ctx: Context, Path((_folder_type, id)): Path<(i32, u6
     let tenant_id = ctx.tenant_id;
     let workspace_id = ctx.workspace_id;
 
-    let Some(folder) = r!(FolderDao::get_by_id(tenant_id, workspace_id, id).await) else {
-        return R::err(WebError::BizWithArgs(Code::FolderNotExist.into(), vec![]));
-    };
+    let folder = r!(validate_folder_exists(tenant_id, workspace_id, id).await);
 
     // Check children
     let count = r!(FolderDao::count_children(tenant_id, workspace_id, id).await);
@@ -116,10 +103,7 @@ pub async fn delete_folder(ctx: Context, Path((_folder_type, id)): Path<(i32, u6
     }
 
     r!(FolderDao::delete(tenant_id, workspace_id, id).await);
-    r!(
-        FolderDao::compress_seq_on_remove(tenant_id, workspace_id, folder.parent_id, folder.seq)
-            .await
-    );
+    r!(FolderDao::compress_seq(tenant_id, workspace_id, folder.parent_id, folder.seq).await);
     R::void()
 }
 
@@ -137,25 +121,39 @@ pub async fn move_folder(
         return R::err(WebError::BizWithArgs(Code::FolderMoveToSelf.into(), vec![]));
     }
 
-    let Some(folder) = r!(FolderDao::get_by_id(tenant_id, workspace_id, id).await) else {
-        return R::err(WebError::BizWithArgs(Code::FolderNotExist.into(), vec![]));
-    };
+    let folder = r!(validate_folder_exists(tenant_id, workspace_id, id).await);
+    r!(validate_parent_exists(tenant_id, workspace_id, req.parent_id).await);
 
-    if req.parent_id != 0 {
-        let parent = r!(FolderDao::get_by_id(tenant_id, workspace_id, req.parent_id).await);
-        if parent.is_none() {
-            return R::err(WebError::BizWithArgs(
-                Code::FolderParentNotExist.into(),
-                vec![],
-            ));
-        }
-    }
-
-    r!(
-        FolderDao::compress_seq_on_remove(tenant_id, workspace_id, folder.parent_id, folder.seq)
-            .await
-    );
-    r!(FolderDao::shift_seq_on_insert(tenant_id, workspace_id, req.parent_id, req.seq).await);
+    r!(FolderDao::compress_seq(tenant_id, workspace_id, folder.parent_id, folder.seq).await);
+    r!(FolderDao::shift_seq(tenant_id, workspace_id, req.parent_id, req.seq).await);
     r!(FolderDao::update_parent_and_seq(tenant_id, workspace_id, id, req.parent_id, req.seq).await);
     R::void()
+}
+
+// 校验文件夹是否存在
+async fn validate_folder_exists(
+    tenant_id: u64,
+    workspace_id: u64,
+    id: u64,
+) -> Result<Folder, WebError> {
+    FolderDao::get_by_id(tenant_id, workspace_id, id)
+        .await?
+        .ok_or_else(|| WebError::Biz(Code::FolderNotExist.into()))
+}
+
+// 校验父目录是否存在
+async fn validate_parent_exists(
+    tenant_id: u64,
+    workspace_id: u64,
+    parent_id: u64,
+) -> Result<(), WebError> {
+    if parent_id == 0 {
+        return Ok(());
+    }
+
+    let parent = FolderDao::get_by_id(tenant_id, workspace_id, parent_id).await?;
+    if parent.is_none() {
+        return Err(WebError::Biz(Code::FolderParentNotExist.into()));
+    }
+    Ok(())
 }

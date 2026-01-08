@@ -43,6 +43,7 @@ async fn main() -> anyhow::Result<()> {
     let driver = driver.build()?;
     U.register(driver)?;
 
+    // 3. 启动服务
     WebServer::new(&conf.server)
         .mount(routes::router())
         .layer_i18n()

@@ -11,7 +11,7 @@ pub static WORKSPACE_CACHE: LazyLock<Cache<u64, u64>> = LazyLock::new(|| {
 });
 
 
-pub async fn get_workspace_id(tenant_id: u64, user_id: u64) -> Option<u64> {
+pub async fn get_workspace_id(user_id: u64) -> Option<u64> {
     WORKSPACE_CACHE.get(&user_id).await
 }
 

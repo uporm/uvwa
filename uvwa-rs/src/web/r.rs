@@ -116,37 +116,37 @@ fn format_validation_errors(err: &ValidationErrors) -> String {
     for (field, errs) in err.field_errors() {
         for e in errs {
             let detail = match e.code.as_ref() {
-                "required" => "is required".to_string(),
+                "required" => t!(Code::ValidationRequired.to_string()).to_string(),
                 "length" => {
-                    let min = e.params.get("min");
-                    let max = e.params.get("max");
+                    let min = e.params.get("min").map(|v| v.to_string());
+                    let max = e.params.get("max").map(|v| v.to_string());
                     match (min, max) {
                         (Some(min), Some(max)) => {
-                            format!("length must be between {} and {}", min, max)
+                            t!(Code::ValidationLengthBetween.to_string(), min => min, max => max).to_string()
                         }
-                        (Some(min), None) => format!("length must be at least {}", min),
-                        (None, Some(max)) => format!("length must be at most {}", max),
-                        _ => "length is invalid".to_string(),
+                        (Some(min), None) => t!(Code::ValidationLengthMin.to_string(), min => min).to_string(),
+                        (None, Some(max)) => t!(Code::ValidationLengthMax.to_string(), max => max).to_string(),
+                        _ => t!(Code::ValidationLengthInvalid.to_string()).to_string(),
                     }
                 }
                 "range" => {
-                    let min = e.params.get("min");
-                    let max = e.params.get("max");
+                    let min = e.params.get("min").map(|v| v.to_string());
+                    let max = e.params.get("max").map(|v| v.to_string());
                     match (min, max) {
                         (Some(min), Some(max)) => {
-                            format!("must be between {} and {}", min, max)
+                            t!(Code::ValidationRangeBetween.to_string(), min => min, max => max).to_string()
                         }
-                        (Some(min), None) => format!("must be at least {}", min),
-                        (None, Some(max)) => format!("must be at most {}", max),
-                        _ => "value is out of range".to_string(),
+                        (Some(min), None) => t!(Code::ValidationRangeMin.to_string(), min => min).to_string(),
+                        (None, Some(max)) => t!(Code::ValidationRangeMax.to_string(), max => max).to_string(),
+                        _ => t!(Code::ValidationRangeInvalid.to_string()).to_string(),
                     }
                 }
-                "email" => "must be a valid email".to_string(),
+                "email" => t!(Code::ValidationEmail.to_string()).to_string(),
                 _ => e
                     .message
                     .clone()
                     .map(|m| m.to_string())
-                    .unwrap_or_else(|| format!("invalid ({})", e.code)),
+                    .unwrap_or_else(|| t!(Code::ValidationUnknown.to_string(), code => e.code).to_string()),
             };
             msgs.push(format!("{}: {}", field, detail));
         }
@@ -183,4 +183,42 @@ macro_rules! r {
             Err(err) => return $crate::web::r::R::err(err.into()),
         }
     };
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use validator::ValidationError;
+
+    #[test]
+    fn test_validation_messages() {
+        // Set locale to en
+        rust_i18n::set_locale("en");
+
+        let mut errs = ValidationErrors::new();
+        errs.add("field1", ValidationError::new("required"));
+        
+        let msg = format_validation_errors(&errs);
+        assert!(msg.contains("is required"));
+
+        // Set locale to zh
+        rust_i18n::set_locale("zh");
+        let msg_zh = format_validation_errors(&errs);
+        assert!(msg_zh.contains("不能为空"));
+        
+        // Test length
+        let mut errs_len = ValidationErrors::new();
+        let mut err_len = ValidationError::new("length");
+        err_len.add_param(std::borrow::Cow::from("min"), &10);
+        err_len.add_param(std::borrow::Cow::from("max"), &20);
+        errs_len.add("field2", err_len);
+        
+        rust_i18n::set_locale("en");
+        let msg_len = format_validation_errors(&errs_len);
+        assert!(msg_len.contains("length must be between 10 and 20"));
+        
+        rust_i18n::set_locale("zh");
+        let msg_len_zh = format_validation_errors(&errs_len);
+        assert!(msg_len_zh.contains("长度必须在 10 和 20 之间"));
+    }
 }

@@ -39,7 +39,7 @@ async fn extract_context(headers: &HeaderMap) -> Result<Context, R<()>> {
 
     let user_id = extract_u64_header(headers, "x-user-id").ok_or_else(unauthorized_error)?;
 
-    let workspace_id = workspace_cache::get_workspace_id(tenant_id, user_id).await;
+    let workspace_id = workspace_cache::get_workspace_id(user_id).await;
 
     Ok(Context {
         tenant_id,

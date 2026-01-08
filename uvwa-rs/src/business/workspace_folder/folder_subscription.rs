@@ -13,7 +13,9 @@ impl WorkspaceSubscription for FolderSubscription {
 
     async fn consume(&self, tenant_id: u64, workspace_id: u64) -> anyhow::Result<()> {
         let mut folder = Folder::new(tenant_id, workspace_id, 1);
-        folder.parent_id(0).name("默认目录".to_string()).seq(1);
+        folder.parent_id = 0;
+        folder.name = "默认目录".to_string();
+        folder.seq = 1;
 
         if let Err(e) = FolderDao::insert(&folder).await {
             return Err(anyhow!("创建默认目录失败: {:?}", e));

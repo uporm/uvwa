@@ -1,174 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//uporm.github.io//DTD Mapper 1//EN" "https://uporm.github.io/dtd/uorm-1-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//uporm.github.io//DTD Mapper 1//EN" "https://uporm.github.io/dtd/uorm-2-mapper.dtd">
 <mapper namespace="app">
 
     <sql id="cols">
-        id, tenant_id, workspace_id, folder_id, app_type, name, description, create_at, update_at
+        id, tenant_id, workspace_id, folder_id, app_type, name, description, tags, create_at, update_at
     </sql>
 
     <!--
         查询应用列表
-        支持按folder_id和name过滤
-        关联app_tag表获取标签ID列表（逗号分隔）
+        支持按folder_id、name和tag_ids过滤
     -->
     <select id="list">
-        select
-        a.id, a.tenant_id, a.workspace_id, a.folder_id, a.app_type, a.name, a.description, a.create_at, a.update_at,
-        (
-            SELECT GROUP_CONCAT(at.tag_id)
-            FROM app_tag at
-            WHERE at.app_id = a.id
-            AND at.tenant_id = a.tenant_id
-            AND at.workspace_id = a.workspace_id
-        ) as tag_ids_str
-        from app a
-        where a.tenant_id = #{tenantId}
-        and a.workspace_id = #{workspaceId}
+        SELECT
+        a.id, a.tenant_id, a.workspace_id, a.folder_id, a.app_type, a.name, a.description, a.tags, a.create_at, a.update_at
+        FROM app a
+        WHERE a.tenant_id = #{tenantId}
+        AND a.workspace_id = #{workspaceId}
         <if test="query.folderId != null">
-            and a.folder_id = #{query.folderId}
+            AND a.folder_id = #{query.folderId}
         </if>
         <if test="query.name != null and query.name != ''">
-            and a.name like concat('%', #{query.name}, '%')
+            AND a.name LIKE CONCAT('%', #{query.name}, '%')
         </if>
-        order by a.create_at desc
+        <if test="query.tagIds != null and query.tagIds.size() > 0">
+            AND (
+            <foreach item="tagId" collection="query.tagIds" separator=" OR ">
+                JSON_CONTAINS(a.tags, CAST(#{tagId} AS CHAR))
+            </foreach>
+            )
+        </if>
+        ORDER BY a.create_at DESC
     </select>
 
     <select id="getById">
-        select
-        a.id, a.tenant_id, a.workspace_id, a.folder_id, a.app_type, a.name, a.description, a.create_at, a.update_at,
-        (
-            SELECT GROUP_CONCAT(at.tag_id)
-            FROM app_tag at
-            WHERE at.app_id = a.id
-            AND at.tenant_id = a.tenant_id
-            AND at.workspace_id = a.workspace_id
-        ) as tag_ids_str
-        from app a
-        where a.id = #{id}
-        and a.tenant_id = #{tenantId}
-        and a.workspace_id = #{workspaceId}
+        SELECT
+        a.id, a.tenant_id, a.workspace_id, a.folder_id, a.app_type, a.name, a.description, a.tags, a.create_at, a.update_at
+        FROM app a
+        WHERE a.id = #{id}
+        AND a.tenant_id = #{tenantId}
+        AND a.workspace_id = #{workspaceId}
     </select>
 
     <insert id="insert">
-        insert into app (id, tenant_id, workspace_id, folder_id, app_type, name, description, create_at, update_at)
-        values (#{id}, #{tenantId}, #{workspaceId}, #{folderId}, #{appType}, #{name}, #{description}, now(), now())
+        INSERT INTO app (id, tenant_id, workspace_id, folder_id, app_type, name, description, tags, create_at, update_at)
+        VALUES (#{id}, #{tenantId}, #{workspaceId}, #{folderId}, #{appType}, #{name}, #{description}, #{tags}, NOW(), NOW())
     </insert>
 
     <update id="update">
-        update app
-        set name = #{name},
+        UPDATE app
+        SET name = #{name},
         description = #{description},
-        update_at = now()
-        where id = #{id}
-        and tenant_id = #{tenantId}
-        and workspace_id = #{workspaceId}
+        tags = #{tags},
+        update_at = NOW()
+        WHERE id = #{id}
+        AND tenant_id = #{tenantId}
+        AND workspace_id = #{workspaceId}
     </update>
 
     <delete id="delete">
-        delete from app
-        where id = #{id}
-        and tenant_id = #{tenantId}
-        and workspace_id = #{workspaceId}
+        DELETE FROM app
+        WHERE id = #{id}
+        AND tenant_id = #{tenantId}
+        AND workspace_id = #{workspaceId}
     </delete>
 
     <delete id="deleteByFolderId">
-        delete from app
-        where folder_id = #{folderId}
-        and tenant_id = #{tenantId}
-        and workspace_id = #{workspaceId}
+        DELETE FROM app
+        WHERE folder_id = #{folderId}
+        AND tenant_id = #{tenantId}
+        AND workspace_id = #{workspaceId}
     </delete>
 
-    <insert id="batchInsertAppTags">
-        insert into app_tag (tenant_id, workspace_id, app_id, tag_id, create_at)
-        values
-        <foreach item="tagId" collection="tagIds" separator=",">
-            (#{tenantId}, #{workspaceId}, #{appId}, #{tagId}, now())
-        </foreach>
+    <insert id="clone">
+        INSERT INTO app (id, tenant_id, workspace_id, folder_id, app_type, name, description, tags, spec, create_at, update_at)
+        SELECT #{newId}, tenant_id, workspace_id, folder_id, app_type, #{name}, #{description}, tags, spec, NOW(), NOW()
+        FROM app
+        WHERE id = #{oldId}
+        AND tenant_id = #{tenantId}
+        AND workspace_id = #{workspaceId}
     </insert>
 
-    <delete id="deleteAppTag">
-        delete from app_tag
-        where app_id = #{appId}
-        and tenant_id = #{tenantId}
-        and workspace_id = #{workspaceId}
-    </delete>
-
-    <delete id="deleteAppTagByTagId">
-        delete from app_tag
-        where tag_id = #{tagId}
-        and tenant_id = #{tenantId}
-        and workspace_id = #{workspaceId}
-    </delete>
-
-    <select id="listAppTagsByAppIds">
-        select id, tenant_id, workspace_id, app_id, tag_id
-        from app_tag
-        where tenant_id = #{tenantId}
-        and workspace_id = #{workspaceId}
-        and app_id in
-        <foreach item="appId" collection="appIds" open="(" separator="," close=")">
-            #{appId}
-        </foreach>
+    <select id="getSpec">
+        SELECT spec
+        FROM app
+        WHERE app_id = #{appId}
+        AND tenant_id = #{tenantId}
+        AND workspace_id = #{workspaceId}
     </select>
 
-    <select id="getDraft">
-        select id, tenant_id, workspace_id, app_id, spec
-        from app_draft
-        where app_id = #{appId}
-        and tenant_id = #{tenantId}
-        and workspace_id = #{workspaceId}
-    </select>
-
-    <insert id="insertOrUpdateDraft">
-        insert into app_draft (id, tenant_id, workspace_id, app_id, spec, create_at, update_at)
-        values (#{id}, #{tenantId}, #{workspaceId}, #{appId}, #{spec}, now(), now())
-        on duplicate key update
-        spec = VALUES(spec),
-        update_at = now()
+    <insert id="updateSpec">
+        UPDATE app
+        SET spec = #{spec}
+        WHERE app_id = #{appId}
+        AND tenant_id = #{tenantId}
+        AND workspace_id = #{workspaceId}
     </insert>
-
-    <delete id="deleteDraft">
-        delete from app_draft
-        where app_id = #{appId}
-        and tenant_id = #{tenantId}
-        and workspace_id = #{workspaceId}
-    </delete>
 
     <update id="cancelLatest">
-        update app_version
-        set is_latest = false
-        where app_id = #{appId}
-        and tenant_id = #{tenantId}
-        and workspace_id = #{workspaceId}
-        and is_latest = true
+        UPDATE app_version
+        SET is_latest = false
+        WHERE app_id = #{appId}
+        AND tenant_id = #{tenantId}
+        AND workspace_id = #{workspaceId}
+        AND is_latest = true
     </update>
 
     <insert id="insertVersion">
-        insert into app_version (id, tenant_id, workspace_id, app_id, version, major, minor, patch, pre_release, description, is_latest, create_at)
-        values (#{id}, #{tenantId}, #{workspaceId}, #{appId}, #{version},
-                #{major}, #{minor}, #{patch}, #{preRelease}, #{description}, #{isLatest}, now())
-    </insert>
-
-    <insert id="insertVersionSpec">
-        insert into app_version_spec (id, tenant_id, workspace_id, app_version_id, spec, create_at)
-        values (#{id}, #{tenantId}, #{workspaceId}, #{appVersionId}, #{spec}, now())
+        INSERT INTO app_version (id, tenant_id, workspace_id, app_id, version, major, minor, patch, pre_release,
+        spec, description, is_latest, create_at)
+        VALUES (#{id}, #{tenantId}, #{workspaceId}, #{appId}, #{version},
+        #{major}, #{minor}, #{patch}, #{preRelease}, #{spec}, #{description}, #{isLatest}, now())
     </insert>
 
     <delete id="deleteVersions">
-        delete from app_version
-        where app_id = #{appId}
-        and tenant_id = #{tenantId}
-        and workspace_id = #{workspaceId}
-    </delete>
-
-    <delete id="deleteVersionSpecs">
-        delete from app_version_spec
-        where app_version_id in (
-            select id
-            from app_version
-            where app_id = #{appId}
-            and tenant_id = #{tenantId}
-            and workspace_id = #{workspaceId}
-        )
+        DELETE FROM app_version
+        WHERE app_id = #{appId}
+        AND tenant_id = #{tenantId}
+        AND workspace_id = #{workspaceId}
     </delete>
 </mapper>

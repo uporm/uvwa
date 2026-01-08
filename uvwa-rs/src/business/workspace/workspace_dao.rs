@@ -18,25 +18,6 @@ impl Workspace {
             description: Some("默认工作空间".to_string()),
         }
     }
-
-    pub fn from(tenant_id: u64, id: u64) -> Self {
-        Workspace {
-            tenant_id,
-            id,
-            name: "".to_string(),
-            description: None,
-        }
-    }
-
-    pub fn name(mut self, name: String) -> Self {
-        self.name = name;
-        self
-    }
-
-    pub fn description(mut self, description: Option<String>) -> Self {
-        self.description = description;
-        self
-    }
 }
 
 #[sql("workspace")]
@@ -60,6 +41,11 @@ impl WorkspaceDao {
 
     #[sql("list")]
     pub async fn list(tenant_id: u64) -> uorm::Result<Vec<Workspace>> {
+        exec!()
+    }
+
+    #[sql("get")]
+    pub async fn get(tenant_id: u64, id: u64) -> uorm::Result<Option<Workspace>> {
         exec!()
     }
 }

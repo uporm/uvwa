@@ -1,7 +1,6 @@
 use std::future::Future;
 
 use crate::web::error::WebError;
-use crate::web::middleware::auth::handle_auth;
 use crate::web::middleware::fallback;
 use crate::web::middleware::i18n::handle_i18n;
 use axum::extract::Request;
@@ -29,12 +28,6 @@ impl WebServer {
     pub fn layer_i18n(mut self) -> Self {
         self.middlewares
             .push(Box::new(|r| r.layer(from_fn(handle_i18n))));
-        self
-    }
-
-    pub fn layer_auth(mut self) -> Self {
-        self.middlewares
-            .push(Box::new(|r| r.layer(from_fn(handle_auth))));
         self
     }
 

@@ -1,4 +1,3 @@
-use crate::utils::id::Id;
 use uorm::{Param, sql};
 
 #[derive(Param)]
@@ -8,25 +7,6 @@ pub struct Tag {
     pub workspace_id: u64,
     pub tag_type: i32,
     pub name: String,
-}
-
-impl Tag {
-    pub fn new(
-        id: Option<u64>,
-        tenant_id: u64,
-        workspace_id: u64,
-        tag_type: i32,
-        name: String,
-    ) -> Self {
-        let id = id.map_or(Id::next_id().unwrap_or_default(), |id| id);
-        Tag {
-            id,
-            tenant_id,
-            workspace_id,
-            tag_type,
-            name,
-        }
-    }
 }
 
 #[sql("workspace_tag")]
@@ -39,7 +19,7 @@ impl TagDao {
     }
 
     #[sql("update")]
-    pub async fn update(tag: Tag) -> uorm::Result<()> {
+    pub async fn update(tag: &Tag) -> uorm::Result<()> {
         exec!()
     }
 
@@ -50,6 +30,16 @@ impl TagDao {
         tag_type: i32,
         id: u64,
     ) -> uorm::Result<()> {
+        exec!()
+    }
+
+    #[sql("get")]
+    pub async fn get(
+        tenant_id: u64,
+        workspace_id: u64,
+        tag_type: i32,
+        id: u64,
+    ) -> uorm::Result<Option<Tag>> {
         exec!()
     }
 

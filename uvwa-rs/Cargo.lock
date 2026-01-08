@@ -2547,6 +2547,7 @@ dependencies = [
  "rivus-logger",
  "rust-i18n",
  "serde",
+ "serde_json",
  "sonyflake",
  "thiserror 2.0.17",
  "tokio",

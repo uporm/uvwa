@@ -19,29 +19,9 @@ impl Folder {
             id: Id::next_id().unwrap_or_default(),
             tenant_id,
             workspace_id,
-            parent_id: 0,
             folder_type,
-            name: "默认目录".to_string(),
-            seq: 1,
-            description: Some("系统自动创建的默认目录".to_string()),
+            ..Default::default()
         }
-    }
-
-    pub fn parent_id(&mut self, parent_id: u64) -> &mut Self {
-        self.parent_id = parent_id;
-        self
-    }
-    pub fn name(&mut self, name: String) -> &mut Self {
-        self.name = name;
-        self
-    }
-    pub fn seq(&mut self, seq: i32) -> &mut Self {
-        self.seq = seq;
-        self
-    }
-    pub fn description(&mut self, description: Option<String>) -> &mut Self {
-        self.description = description;
-        self
     }
 }
 
@@ -50,7 +30,11 @@ pub struct FolderDao;
 
 impl FolderDao {
     #[sql("list")]
-    pub async fn list(tenant_id: u64, workspace_id: u64, folder_type: i32) -> uorm::Result<Vec<Folder>> {
+    pub async fn list(
+        tenant_id: u64,
+        workspace_id: u64,
+        folder_type: i32,
+    ) -> uorm::Result<Vec<Folder>> {
         exec!()
     }
 
@@ -97,7 +81,7 @@ impl FolderDao {
     }
 
     #[sql("shiftSeqOnInsert")]
-    pub async fn shift_seq_on_insert(
+    pub async fn shift_seq(
         tenant_id: u64,
         workspace_id: u64,
         parent_id: u64,
@@ -107,7 +91,7 @@ impl FolderDao {
     }
 
     #[sql("compressSeqOnRemove")]
-    pub async fn compress_seq_on_remove(
+    pub async fn compress_seq(
         tenant_id: u64,
         workspace_id: u64,
         parent_id: u64,

@@ -3,34 +3,46 @@
 <mapper namespace="workspace">
 
     <sql id="cols">
-        id, tenant_id, name, description, create_at, update_at
+            id,
+            tenant_id,
+            name,
+            description,
+            create_at,
+            update_at
     </sql>
 
     <select id="list">
-        select
+        SELECT
         <include refid="cols"/>
-        from workspace
-        where tenant_id = #{tenantId}
+        FROM workspace
+        WHERE tenant_id = #{tenantId}
+    </select>
+
+    <select id="get">
+        SELECT <include refid="cols"/>
+        FROM workspace
+        WHERE id = #{id}
+        AND tenant_id = #{tenantId}
     </select>
 
     <insert id="insert">
-        insert into workspace (id, tenant_id, name, description, create_at, update_at)
-        values (#{id}, #{tenantId}, #{name}, #{description}, now(), now())
+        INSERT INTO workspace (id, tenant_id, name, description, create_at, update_at)
+        VALUES (#{id}, #{tenantId}, #{name}, #{description}, NOW(), NOW())
     </insert>
 
     <update id="update">
-        update workspace
-        set name = #{name},
-        description = #{description},
-        update_at = now()
-        where id = #{id}
-        and tenant_id = #{tenantId}
+        UPDATE workspace
+        SET name = #{name},
+            description = #{description},
+            update_at = NOW()
+        WHERE id = #{id}
+        AND tenant_id = #{tenantId}
     </update>
 
     <delete id="delete">
-        delete
-        from workspace
-        where id = #{id}
-        and tenant_id = #{tenantId}
+        DELETE
+        FROM workspace
+        WHERE id = #{id}
+        AND tenant_id = #{tenantId}
     </delete>
 </mapper>

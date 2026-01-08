@@ -44,6 +44,30 @@ pub enum Code {
     // 参数不合法：客户端请求包含非法参数
     IllegalParam = 902,
 
+    // 校验相关错误码
+    // 字段必填
+    ValidationRequired = 1001,
+    // 长度必须在范围内
+    ValidationLengthBetween = 1002,
+    // 长度必须至少为
+    ValidationLengthMin = 1003,
+    // 长度必须至多为
+    ValidationLengthMax = 1004,
+    // 长度无效
+    ValidationLengthInvalid = 1005,
+    // 数值必须在范围内
+    ValidationRangeBetween = 1006,
+    // 数值必须至少为
+    ValidationRangeMin = 1007,
+    // 数值必须至多为
+    ValidationRangeMax = 1008,
+    // 数值超出范围
+    ValidationRangeInvalid = 1009,
+    // 必须是有效的电子邮件地址
+    ValidationEmail = 1010,
+    // 无效（未知的校验错误）
+    ValidationUnknown = 1011,
+
     // 文件夹相关
     // 父文件夹不存在
     FolderParentNotExist = 3101,
@@ -64,6 +88,12 @@ pub enum Code {
     WorkspaceCurrentCannotDelete = 3301,
     // 未选择工作空间
     WorkspaceNotSelected = 3302,
+    // 工作空间不存在
+    WorkspaceNotExist = 3303,
+
+    // 标签相关
+    // 标签不存在
+    TagNotExist = 3401,
 }
 
 impl From<Code> for i32 {

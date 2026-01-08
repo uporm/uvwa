@@ -16,6 +16,7 @@ rivus-logger = { version = "0.5.0", path = "../../rivus/rivus-logger" }
 
 axum = "0.8.8"
 serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0"
 tokio = "1.48.0"
 anyhow = "1.0.100"
 tracing = "0.1"

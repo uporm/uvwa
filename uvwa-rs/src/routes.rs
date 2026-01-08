@@ -10,15 +10,15 @@ use axum::routing::{delete, get, post, put};
 
 pub fn router() -> Router {
     // 公开路由
-    let public_routes = Router::new().nest("/uvwa", public_user_routes());
+    let public_routes = Router::new().nest("/uvwa/api", public_user_routes());
 
     // 受保护路由
     let protected_routes = Router::new()
-        .nest("/uvwa", user_routes())
-        .nest("/uvwa", workspace_routes())
-        .nest("/uvwa", folder_routes())
-        .nest("/uvwa", tag_routes())
-        .nest("/uvwa", app_routes())
+        .nest("/uvwa/api", user_routes())
+        .nest("/uvwa/api", workspace_routes())
+        .nest("/uvwa/api", folder_routes())
+        .nest("/uvwa/api", tag_routes())
+        .nest("/uvwa/api", app_routes())
         .layer(middleware::from_fn(handle_auth));
 
     Router::new().merge(public_routes).merge(protected_routes)
@@ -92,8 +92,8 @@ fn app_routes() -> Router {
         .route("/apps", post(app_handler::create_app))
         .route("/apps/{id}", put(app_handler::update_app))
         .route("/apps/{id}", delete(app_handler::delete_app))
-        .route("/apps/{id}/draft", get(app_handler::get_app_draft))
-        .route("/apps/{id}/draft", put(app_handler::update_app_draft))
+        .route("/apps/{id}/draft", get(app_handler::get_app_spec))
+        .route("/apps/{id}/draft", put(app_handler::update_app_spec))
         .route("/apps/{id}/clone", post(app_handler::clone_app))
         .route("/apps/{id}/release", post(app_handler::release_app))
         .route("/apps/{id}/tags", put(app_handler::update_app_tags))

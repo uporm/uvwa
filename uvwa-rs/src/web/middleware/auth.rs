@@ -21,7 +21,7 @@ pub async fn handle_auth(mut req: Request, next: Next) -> Response {
     
     // 检查是否为 workspace 模块的请求
     let path = req.uri().path();
-    let is_workspace_request = path.starts_with("/uvwa/workspaces");
+    let is_workspace_request = path.starts_with("/uvwa/api/workspaces");
     
     // 如果不是 workspace 请求且 workspace_id 为 0，返回错误
     if !is_workspace_request && context.workspace_id == 0 {

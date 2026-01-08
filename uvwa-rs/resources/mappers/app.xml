@@ -3,7 +3,16 @@
 <mapper namespace="app">
 
     <sql id="cols">
-        id, tenant_id, workspace_id, folder_id, app_type, name, description, tags, create_at, update_at
+            id,
+            tenant_id,
+            workspace_id,
+            folder_id,
+            app_type,
+            name,
+            description,
+            tags,
+            create_at,
+            update_at
     </sql>
 
     <!--
@@ -12,29 +21,33 @@
     -->
     <select id="list">
         SELECT
-        a.id, a.tenant_id, a.workspace_id, a.folder_id, a.app_type, a.name, a.description, a.tags, a.create_at, a.update_at
-        FROM app a
-        WHERE a.tenant_id = #{tenantId}
-        AND a.workspace_id = #{workspaceId}
+        <include refid="cols"/>
+        FROM app
+        WHERE tenant_id = #{tenantId}
+        AND workspace_id = #{workspaceId}
         <if test="query.folderId != null">
-            AND a.folder_id = #{query.folderId}
+            AND folder_id = #{query.folderId}
+        </if>
+        <if test="query.appType != null">
+            AND app_type = #{query.appType}
         </if>
         <if test="query.name != null and query.name != ''">
-            AND a.name LIKE CONCAT('%', #{query.name}, '%')
+            AND name LIKE CONCAT('%', #{query.name}, '%')
         </if>
-        <if test="query.tagIds != null and query.tagIds.size() > 0">
+        <if test="query.tagIds != null">
             AND (
             <foreach item="tagId" collection="query.tagIds" separator=" OR ">
-                JSON_CONTAINS(a.tags, CAST(#{tagId} AS CHAR))
+                JSON_CONTAINS(tags, CAST(#{tagId} AS CHAR))
             </foreach>
             )
         </if>
-        ORDER BY a.create_at DESC
+        ORDER BY create_at DESC
     </select>
 
     <select id="getById">
         SELECT
-        a.id, a.tenant_id, a.workspace_id, a.folder_id, a.app_type, a.name, a.description, a.tags, a.create_at, a.update_at
+        a.id, a.tenant_id, a.workspace_id, a.folder_id, a.app_type, a.name, a.description, a.tags, a.create_at,
+        a.update_at
         FROM app a
         WHERE a.id = #{id}
         AND a.tenant_id = #{tenantId}
@@ -42,8 +55,10 @@
     </select>
 
     <insert id="insert">
-        INSERT INTO app (id, tenant_id, workspace_id, folder_id, app_type, name, description, tags, create_at, update_at)
-        VALUES (#{id}, #{tenantId}, #{workspaceId}, #{folderId}, #{appType}, #{name}, #{description}, #{tags}, NOW(), NOW())
+        INSERT INTO app (id, tenant_id, workspace_id, folder_id, app_type, name, description, tags, create_at,
+        update_at)
+        VALUES (#{id}, #{tenantId}, #{workspaceId}, #{folderId}, #{appType}, #{name}, #{description}, #{tags}, NOW(),
+        NOW())
     </insert>
 
     <update id="update">
@@ -72,7 +87,8 @@
     </delete>
 
     <insert id="clone">
-        INSERT INTO app (id, tenant_id, workspace_id, folder_id, app_type, name, description, tags, spec, create_at, update_at)
+        INSERT INTO app (id, tenant_id, workspace_id, folder_id, app_type, name, description, tags, spec, create_at,
+        update_at)
         SELECT #{newId}, tenant_id, workspace_id, folder_id, app_type, #{name}, #{description}, tags, spec, NOW(), NOW()
         FROM app
         WHERE id = #{oldId}

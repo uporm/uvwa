@@ -1,10 +1,8 @@
+use crate::web::ts_str::to_number;
+use crate::web::ts_str::vec_to_number;
 use crate::business::app::app_dao::{App, AppVersion};
 use crate::utils::id::Id;
-use crate::web::ts_str::to_number;
-use crate::web::ts_str::option_to_number;
-use crate::web::ts_str::option_vec_to_number;
 use crate::web::ts_str::to_str;
-use crate::web::ts_str::vec_to_number;
 use crate::web::ts_str::vec_to_str;
 use serde::{Deserialize, Serialize};
 use serde_json;
@@ -106,11 +104,9 @@ fn parse_version(version: &str) -> (Option<i32>, Option<i32>, Option<i32>, Optio
 #[derive(Deserialize, Serialize, Param, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct AppReq {
-    #[serde(default, deserialize_with = "option_to_number")]
     pub folder_id: Option<u64>,
     pub app_type: Option<i32>,
     pub name: Option<String>,
-    #[serde(default, deserialize_with = "option_vec_to_number")]
     pub tag_ids: Option<Vec<u64>>,
 }
 

@@ -19,8 +19,8 @@ pub struct AppCreateReq {
     pub description: Option<String>,
 }
 
-impl From<(AppCreateReq, u64, u64)> for App {
-    fn from((req, tenant_id, workspace_id): (AppCreateReq, u64, u64)) -> Self {
+impl From<(u64, u64, AppCreateReq)> for App {
+    fn from((tenant_id, workspace_id, req): (u64, u64, AppCreateReq)) -> Self {
         Self {
             id: Id::next_id().unwrap_or_default(),
             tenant_id,
@@ -43,7 +43,7 @@ pub struct AppUpdateReq {
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AppDraftUpdateReq {
+pub struct AppSpecUpdateReq {
     pub spec: String,
 }
 

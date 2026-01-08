@@ -19,7 +19,8 @@
     </select>
 
     <select id="get">
-        SELECT <include refid="cols"/>
+        SELECT
+        <include refid="cols"/>
         FROM workspace
         WHERE id = #{id}
         AND tenant_id = #{tenantId}
@@ -33,8 +34,8 @@
     <update id="update">
         UPDATE workspace
         SET name = #{name},
-            description = #{description},
-            update_at = NOW()
+        description = #{description},
+        update_at = NOW()
         WHERE id = #{id}
         AND tenant_id = #{tenantId}
     </update>

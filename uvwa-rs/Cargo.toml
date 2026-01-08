@@ -10,7 +10,7 @@ include = [
 ]
 
 [dependencies]
-uorm = { version = "0.7.0", path = "../../uorm", features = ["mysql"] }
+uorm = { version = "0.7.2", path = "../../uorm", features = ["mysql"] }
 rivus-core = { version = "0.5.0", path = "../../rivus/rivus-core" }
 rivus-logger = { version = "0.5.0", path = "../../rivus/rivus-logger" }
 

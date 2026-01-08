@@ -1,23 +1,11 @@
-use crate::utils::id::Id;
-use uorm::{Param, sql};
+use uorm::{sql, Param};
 
-#[derive(Param, Clone)]
+#[derive(Param)]
 pub struct Workspace {
     pub tenant_id: u64,
     pub id: u64,
     pub name: String,
     pub description: Option<String>,
-}
-
-impl Workspace {
-    pub fn new(tenant_id: u64) -> Self {
-        Workspace {
-            tenant_id,
-            id: Id::next_id().unwrap_or_default(),
-            name: "默认工作空间".to_string(),
-            description: Some("默认工作空间".to_string()),
-        }
-    }
 }
 
 #[sql("workspace")]

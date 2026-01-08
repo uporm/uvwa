@@ -12,10 +12,7 @@ use axum::extract::Path;
 pub async fn list_tags(ctx: Context, Path(tag_type): Path<i32>) -> R<Vec<TagResp>> {
     let tags = r!(TagDao::list(ctx.tenant_id, ctx.workspace_id, tag_type).await);
 
-    let tags = tags
-        .into_iter()
-        .map(|tag| tag.into())
-        .collect::<Vec<TagResp>>();
+    let tags: Vec<TagResp> = tags.into_iter().map(Into::into).collect();
     R::ok(tags)
 }
 

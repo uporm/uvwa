@@ -1,7 +1,7 @@
 use crate::business::workspace::workspace_dao::Workspace;
+use crate::utils::id::Id;
 use crate::web::ts_str::to_str;
 use serde::{Deserialize, Serialize};
-use crate::utils::id::Id;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -10,8 +10,8 @@ pub struct WorkspaceReq {
     pub description: Option<String>,
 }
 
-impl From<(WorkspaceReq, u64)> for Workspace {
-    fn from((req, tenant_id): (WorkspaceReq, u64)) -> Self {
+impl From<(u64, WorkspaceReq)> for Workspace {
+    fn from((tenant_id, req): (u64, WorkspaceReq)) -> Self {
         Self {
             id: Id::next_id().unwrap_or_default(),
             tenant_id,

@@ -2,7 +2,7 @@ use crate::business::app::app_dao::{App, AppDao};
 use crate::business::workspace_folder::folder_dao::FolderDao;
 use crate::core::code::Code;
 use crate::models::app::{
-    AppCloneReq, AppCreateReq, AppDraftUpdateReq, AppReq, AppResp, AppTagUpdateReq, AppUpdateReq,
+    AppCloneReq, AppCreateReq, AppReq, AppResp, AppSpecUpdateReq, AppTagUpdateReq, AppUpdateReq,
     AppVersionReq,
 };
 use crate::models::context::Context;
@@ -21,7 +21,7 @@ use validator::Validate;
 pub async fn list_apps(ctx: Context, Query(req): Query<AppReq>) -> R<Vec<AppResp>> {
     // 查询应用列表
     let apps = r!(AppDao::list(ctx.tenant_id, ctx.workspace_id, &req).await);
-    let app_resps = apps.into_iter().map(AppResp::from).collect();
+    let app_resps = apps.into_iter().map(Into::into).collect();
     R::ok(app_resps)
 }
 
@@ -38,14 +38,11 @@ pub async fn create_app(ctx: Context, Json(req): Json<AppCreateReq>) -> R<()> {
     if req.folder_id != 0 {
         let folder = r!(FolderDao::get_by_id(ctx.tenant_id, ctx.workspace_id, req.folder_id).await);
         if folder.is_none() {
-            return R::err(WebError::BizWithArgs(
-                Code::AppParentFolderNotExist.into(),
-                vec![],
-            ));
+            return R::err(WebError::Biz(Code::AppParentFolderNotExist.into()));
         }
     }
 
-    let app: App = (req, ctx.tenant_id, ctx.workspace_id).into();
+    let app: App = (ctx.tenant_id, ctx.workspace_id, req).into();
     r!(AppDao::insert(&app).await);
     R::void()
 }
@@ -54,7 +51,7 @@ pub async fn create_app(ctx: Context, Json(req): Json<AppCreateReq>) -> R<()> {
 pub async fn update_app(ctx: Context, Path(id): Path<u64>, Json(req): Json<AppUpdateReq>) -> R<()> {
     let exist = r!(AppDao::get_by_id(ctx.tenant_id, ctx.workspace_id, id).await);
     if exist.is_none() {
-        return R::err(WebError::BizWithArgs(Code::AppNotExist.into(), vec![]));
+        return R::err(WebError::Biz(Code::AppNotExist.into()));
     }
 
     let mut app = exist.unwrap();
@@ -81,7 +78,7 @@ pub async fn delete_app(ctx: Context, Path(id): Path<u64>) -> R<()> {
 pub async fn update_app_spec(
     ctx: Context,
     Path(id): Path<u64>,
-    Json(req): Json<AppDraftUpdateReq>,
+    Json(req): Json<AppSpecUpdateReq>,
 ) -> R<()> {
     let exist = r!(AppDao::get_by_id(ctx.tenant_id, ctx.workspace_id, id).await);
     if exist.is_none() {
@@ -99,7 +96,7 @@ pub async fn update_app_tags(
 ) -> R<()> {
     let exist = r!(AppDao::get_by_id(ctx.tenant_id, ctx.workspace_id, id).await);
     if exist.is_none() {
-        return R::err(WebError::BizWithArgs(Code::AppNotExist.into(), vec![]));
+        return R::err(WebError::Biz(Code::AppNotExist.into()));
     }
 
     let mut app = exist.unwrap();
@@ -147,12 +144,10 @@ pub async fn release_app(
     if spec.is_none() {
         return R::err(WebError::Biz(Code::AppDraftNotExist.into()));
     }
-    let spec_str = spec.unwrap();
 
     r!(AppDao::cancel_latest(ctx.tenant_id, ctx.workspace_id, id).await);
 
-    let app = exist.unwrap();
-    let version = (app, req, spec_str).into();
+    let version = (exist.unwrap(), req, spec.unwrap()).into();
     r!(AppDao::insert_version(&version).await);
 
     R::void()

@@ -65,7 +65,6 @@ pub async fn create_folder(
     folder.parent_id = req.parent_id;
     folder.name = req.name;
     folder.seq = seq;
-    folder.description = req.description;
 
     let id = r!(FolderDao::insert(&folder).await);
     R::ok(id.to_string())
@@ -84,7 +83,6 @@ pub async fn update_folder(
     let mut folder = r!(validate_folder_exists(tenant_id, workspace_id, id).await);
 
     folder.name = req.name;
-    folder.description = req.description;
     r!(FolderDao::update(&folder).await);
     R::void()
 }

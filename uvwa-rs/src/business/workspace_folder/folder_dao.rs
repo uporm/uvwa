@@ -10,7 +10,6 @@ pub struct Folder {
     pub folder_type: i32,
     pub name: String,
     pub seq: i32,
-    pub description: Option<String>,
 }
 
 impl Folder {

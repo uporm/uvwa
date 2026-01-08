@@ -79,7 +79,6 @@ create table workspace_folder
     folder_type  tinyint          not null comment '目录类型',
     name         varchar(50)      not null comment '目录名称',
     seq          int              null comment '序号',
-    description  varchar(200)     null comment '描述',
     create_at    datetime         null comment '创建时间',
     update_at    datetime         null comment '更新时间'
 )

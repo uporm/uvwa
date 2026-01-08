@@ -12,7 +12,6 @@ pub struct FolderResp {
     #[serde(serialize_with = "to_str")]
     pub parent_id: u64,
     pub name: String,
-    pub description: Option<String>,
     pub seq: i32,
     pub children: Vec<FolderResp>,
 }
@@ -23,7 +22,6 @@ impl From<Folder> for FolderResp {
             id: folder.id,
             parent_id: folder.parent_id,
             name: folder.name,
-            description: folder.description,
             seq: folder.seq,
             children: vec![],
         }
@@ -37,7 +35,6 @@ pub struct CreateFolderReq {
     pub parent_id: u64,
     #[validate(length(min = 1))]
     pub name: String,
-    pub description: Option<String>,
 }
 
 #[derive(Deserialize, Validate)]
@@ -45,7 +42,6 @@ pub struct CreateFolderReq {
 pub struct UpdateFolderReq {
     #[validate(length(min = 1))]
     pub name: String,
-    pub description: Option<String>,
 }
 
 #[derive(Deserialize, Validate)]

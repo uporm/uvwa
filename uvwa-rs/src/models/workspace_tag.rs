@@ -1,21 +1,34 @@
 use crate::business::workspace_tag::tag_dao::Tag;
+use crate::utils::id::Id;
 use crate::web::ts_str::to_str;
 use serde::{Deserialize, Serialize};
-use crate::utils::id::Id;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TagReq {
+    pub tag_type: i32,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TagCreateReq {
+    pub tag_type: i32,
     pub name: String,
 }
 
-impl From<(u64, u64, i32, TagReq)> for Tag {
-    fn from((tenant_id, workspace_id, tag_type, tag_req): (u64, u64, i32, TagReq)) -> Self {
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TagUpdateReq {
+    pub name: String,
+}
+
+impl From<(u64, u64, TagCreateReq)> for Tag {
+    fn from((tenant_id, workspace_id, tag_req): (u64, u64, TagCreateReq)) -> Self {
         Self {
             id: Id::next_id().unwrap_or_default(),
             tenant_id,
             workspace_id,
-            tag_type,
+            tag_type: tag_req.tag_type,
             name: tag_req.name,
         }
     }

@@ -13,12 +13,11 @@ pub struct Folder {
 }
 
 impl Folder {
-    pub fn new(tenant_id: u64, workspace_id: u64, folder_type: i32) -> Self {
+    pub fn new(tenant_id: u64, workspace_id: u64) -> Self {
         Self {
             id: Id::next_id().unwrap_or_default(),
             tenant_id,
             workspace_id,
-            folder_type,
             ..Default::default()
         }
     }

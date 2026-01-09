@@ -33,7 +33,6 @@
         WHERE id = #{id}
         AND tenant_id = #{tenantId}
         AND workspace_id = #{workspaceId}
-        AND tag_type = #{tagType}
     </update>
 
     <delete id="delete">
@@ -42,7 +41,6 @@
         WHERE id = #{id}
         AND tenant_id = #{tenantId}
         AND workspace_id = #{workspaceId}
-        AND tag_type = #{tagType}
     </delete>
 
     <select id="get">
@@ -52,6 +50,5 @@
         WHERE id = #{id}
         AND tenant_id = #{tenantId}
         AND workspace_id = #{workspaceId}
-        AND tag_type = #{tagType}
     </select>
 </mapper>

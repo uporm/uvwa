@@ -1,5 +1,5 @@
-use crate::web::ts_str::to_number;
 use crate::business::workspace_folder::folder_dao::Folder;
+use crate::web::ts_str::to_number;
 use crate::web::ts_str::to_str;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
@@ -28,6 +28,12 @@ impl From<Folder> for FolderResp {
     }
 }
 
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FolderReq {
+    pub folder_type: i32,
+}
+
 #[derive(Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateFolderReq {
@@ -35,6 +41,7 @@ pub struct CreateFolderReq {
     pub parent_id: u64,
     #[validate(length(min = 1))]
     pub name: String,
+    pub folder_type: i32,
 }
 
 #[derive(Deserialize, Validate)]

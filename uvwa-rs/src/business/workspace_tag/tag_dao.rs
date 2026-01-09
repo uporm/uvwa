@@ -27,7 +27,6 @@ impl TagDao {
     pub async fn delete(
         tenant_id: u64,
         workspace_id: u64,
-        tag_type: i32,
         id: u64,
     ) -> uorm::Result<()> {
         exec!()
@@ -37,7 +36,6 @@ impl TagDao {
     pub async fn get(
         tenant_id: u64,
         workspace_id: u64,
-        tag_type: i32,
         id: u64,
     ) -> uorm::Result<Option<Tag>> {
         exec!()

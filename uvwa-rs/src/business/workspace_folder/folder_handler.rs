@@ -3,19 +3,19 @@ use crate::core::code::Code;
 use crate::core::constants::{ZERO_I32, ZERO_U64};
 use crate::models::context::Context;
 use crate::models::workspace_folder::{
-    CreateFolderReq, FolderResp, MoveFolderReq, UpdateFolderReq,
+    CreateFolderReq, FolderReq, FolderResp, MoveFolderReq, UpdateFolderReq,
 };
 use crate::r;
 use crate::web::error::WebError;
 use crate::web::extract::Json;
 use crate::web::r::R;
-use axum::extract::Path;
+use axum::extract::{Path, Query};
 use std::collections::HashMap;
 use validator::Validate;
 
 // 查询目录树
-pub async fn get_folder_tree(ctx: Context, Path(folder_type): Path<i32>) -> R<Vec<FolderResp>> {
-    let folders = r!(FolderDao::list(ctx.tenant_id, ctx.workspace_id, folder_type).await);
+pub async fn get_folder_tree(ctx: Context, Query(req): Query<FolderReq>) -> R<Vec<FolderResp>> {
+    let folders = r!(FolderDao::list(ctx.tenant_id, ctx.workspace_id, req.folder_type).await);
 
     let folder_resps: Vec<FolderResp> = folders.into_iter().map(Into::into).collect();
     let tree = build_folder_tree(folder_resps);
@@ -44,11 +44,7 @@ fn build_recursive(parent_id: u64, map: &mut HashMap<u64, Vec<FolderResp>>) -> V
 }
 
 // 创建目录
-pub async fn create_folder(
-    ctx: Context,
-    Path(folder_type): Path<i32>,
-    Json(req): Json<CreateFolderReq>,
-) -> R<String> {
+pub async fn create_folder(ctx: Context, Json(req): Json<CreateFolderReq>) -> R<String> {
     r!(req.validate());
     let tenant_id = ctx.tenant_id;
     let workspace_id = ctx.workspace_id;
@@ -59,7 +55,8 @@ pub async fn create_folder(
     let max_seq = r!(FolderDao::get_max_seq(tenant_id, workspace_id, req.parent_id).await);
     let seq = max_seq.unwrap_or(ZERO_I32) + 1;
 
-    let mut folder = Folder::new(tenant_id, workspace_id, folder_type);
+    let mut folder = Folder::new(tenant_id, workspace_id);
+    folder.folder_type = req.folder_type;
     folder.parent_id = req.parent_id;
     folder.name = req.name;
     folder.seq = seq;
@@ -71,7 +68,7 @@ pub async fn create_folder(
 // 更新文件夹
 pub async fn update_folder(
     ctx: Context,
-    Path((_folder_type, id)): Path<(i32, u64)>,
+    Path(id): Path<u64>,
     Json(req): Json<UpdateFolderReq>,
 ) -> R<()> {
     r!(req.validate());
@@ -83,7 +80,7 @@ pub async fn update_folder(
 }
 
 // 删除文件夹
-pub async fn delete_folder(ctx: Context, Path((_folder_type, id)): Path<(i32, u64)>) -> R<()> {
+pub async fn delete_folder(ctx: Context, Path(id): Path<u64>) -> R<()> {
     let tenant_id = ctx.tenant_id;
     let workspace_id = ctx.workspace_id;
 
@@ -103,7 +100,7 @@ pub async fn delete_folder(ctx: Context, Path((_folder_type, id)): Path<(i32, u6
 // 移动文件夹
 pub async fn move_folder(
     ctx: Context,
-    Path((_folder_type, id)): Path<(i32, u64)>,
+    Path(id): Path<u64>,
     Json(req): Json<MoveFolderReq>,
 ) -> R<()> {
     r!(req.validate());

@@ -55,23 +55,23 @@ fn workspace_routes() -> Router {
 fn folder_routes() -> Router {
     Router::new()
         .route(
-            "/folders/{folder_type}",
+            "/folders",
             get(folder_handler::get_folder_tree),
         )
         .route(
-            "/folders/{folder_type}",
+            "/folders",
             post(folder_handler::create_folder),
         )
         .route(
-            "/folders/{folder_type}/{id}",
+            "/folders/{id}",
             put(folder_handler::update_folder),
         )
         .route(
-            "/folders/{folder_type}/{id}",
+            "/folders/{id}",
             delete(folder_handler::delete_folder),
         )
         .route(
-            "/folders/{folder_type}/{id}/move",
+            "/folders/{id}/move",
             put(folder_handler::move_folder),
         )
 }
@@ -79,10 +79,10 @@ fn folder_routes() -> Router {
 // Tag routes
 fn tag_routes() -> Router {
     Router::new()
-        .route("/tags/{tag_type}", get(tag_handler::list_tags))
-        .route("/tags/{tag_type}", post(tag_handler::create_tag))
-        .route("/tags/{tag_type}/{id}", put(tag_handler::update_tag))
-        .route("/tags/{tag_type}/{id}", delete(tag_handler::delete_tag))
+        .route("/tags", get(tag_handler::list_tags))
+        .route("/tags", post(tag_handler::create_tag))
+        .route("/tags/{id}", put(tag_handler::update_tag))
+        .route("/tags/{id}", delete(tag_handler::delete_tag))
 }
 
 // App routes

@@ -1,4 +1,4 @@
-import { getAppDraft, updateAppDraft } from '@/api/app.api';
+import { getAppSpec, updateAppSpec } from '@/api/app.api';
 import { NODE_TYPE, NodeDefineTypes } from '@/pages/app/nodeTypes';
 import { getAllChildrenIds, sortNodes } from '@/pages/app/util';
 import { FlowEdge, FlowNode } from '@/types/app.types';
@@ -14,7 +14,7 @@ interface NodeSize {
 
 const NodeSizeMap: Record<string, NodeSize> = {};
 
-export const flowContentState = proxy({
+export const flowSpecState = proxy({
   nodes: [] as FlowNode<any>[],
   edges: [] as FlowEdge<any>[],
 });
@@ -28,18 +28,18 @@ export const flowEditorState = proxy({
 });
 
 export const initSubscribe = () => {
-  return subscribe(flowContentState, scheduleAutoSave);
+  return subscribe(flowSpecState, scheduleAutoSave);
 };
 
 // ==================== 工作流编辑相关函数 ====================
 
-export const fetchAppContent = async (id: string) => {
-  const r = await getAppDraft(id);
+export const fetchAppSpec = async (id: string) => {
+  const r = await getAppSpec(id);
   const appContent = JSON.parse(r.data || '{}');
-  flowContentState.nodes = appContent.nodes || [];
-  flowContentState.edges = appContent.edges || [];
+  flowSpecState.nodes = appContent.nodes || [];
+  flowSpecState.edges = appContent.edges || [];
   flowEditorState.currentAppId = id;
-  flowEditorState.lastSaved = JSON.stringify({ nodes: flowContentState.nodes, edges: flowContentState.edges });
+  flowEditorState.lastSaved = JSON.stringify({ nodes: flowSpecState.nodes, edges: flowSpecState.edges });
 };
 
 let saveTimer: any = null;
@@ -50,17 +50,17 @@ const scheduleAutoSave = () => {
   saveTimer = setTimeout(async () => {
     // 构建流程数据并序列化
     const serialized = JSON.stringify({
-      nodes: flowContentState.nodes.map((node) => {
+      nodes: flowSpecState.nodes.map((node) => {
         const savedSize = NodeSizeMap[node.id];
         return savedSize ? { ...node, width: savedSize.width, height: savedSize.height } : node;
       }),
-      edges: flowContentState.edges,
+      edges: flowSpecState.edges,
     });
 
     // 如果没有变化则跳过保存
     if (serialized === flowEditorState.lastSaved) return;
 
-    await updateAppDraft(flowEditorState.currentAppId!, serialized);
+    await updateAppSpec(flowEditorState.currentAppId!, serialized);
     flowEditorState.lastSaved = serialized;
   }, 800);
 };
@@ -75,16 +75,16 @@ export const setHoveredNodeId = (nodeId: string | null) => {
 
 export const setNodes = (nodes: FlowNode<any>[]) => {
   console.log('setNodes', nodes);
-  flowContentState.nodes = nodes;
+  flowSpecState.nodes = nodes;
 };
 
 export const setEdges = (edges: FlowEdge<any>[]) => {
   console.log('setEdges', edges);
-  flowContentState.edges = edges;
+  flowSpecState.edges = edges;
 };
 
 export const addNode = (type: string, position: { x: number; y: number }) => {
-  let startNode = flowContentState.nodes.find((n) => n.type === NODE_TYPE.START);
+  let startNode = flowSpecState.nodes.find((n) => n.type === NODE_TYPE.START);
   if (type === NODE_TYPE.START && startNode) {
     message.info('流程中只能有一个开始节点！');
     return;
@@ -115,12 +115,12 @@ export const addNode = (type: string, position: { x: number; y: number }) => {
     nodes.push(groupStartNode);
   }
 
-  flowContentState.nodes.push(...nodes);
+  flowSpecState.nodes.push(...nodes);
 };
 
 export const updateNode = (node: FlowNode<any>) => {
-  let nodes = flowContentState.nodes.map((n) => (n.id === node.id ? node : n));
-  flowContentState.nodes = sortNodes(nodes);
+  let nodes = flowSpecState.nodes.map((n) => (n.id === node.id ? node : n));
+  flowSpecState.nodes = sortNodes(nodes);
 
   // 如果被更新的节点是当前选中的节点，同步更新选中状态
   if (flowEditorState.selectedNode && flowEditorState.selectedNode.id === node.id) {
@@ -129,11 +129,11 @@ export const updateNode = (node: FlowNode<any>) => {
 };
 
 export const deleteNode = (nodeId: string) => {
-  let childrenNodes = getAllChildrenIds(nodeId, flowContentState.nodes);
-  let nodes = flowContentState.nodes.filter((n) => n.id !== nodeId && !childrenNodes.includes(n.id));
-  let edges = flowContentState.edges.filter((e) => e.source !== nodeId && e.target !== nodeId);
-  flowContentState.nodes = nodes;
-  flowContentState.edges = edges;
+  let childrenNodes = getAllChildrenIds(nodeId, flowSpecState.nodes);
+  let nodes = flowSpecState.nodes.filter((n) => n.id !== nodeId && !childrenNodes.includes(n.id));
+  let edges = flowSpecState.edges.filter((e) => e.source !== nodeId && e.target !== nodeId);
+  flowSpecState.nodes = nodes;
+  flowSpecState.edges = edges;
 
   // 如果被删除的节点是当前选中的节点，清除选中状态
   if (flowEditorState.selectedNode && flowEditorState.selectedNode.id === nodeId) {
@@ -143,7 +143,7 @@ export const deleteNode = (nodeId: string) => {
 
 export const cloneNode = (nodeId: string) => {
   // 找到要克隆的节点
-  const sourceNode = flowContentState.nodes.find((n) => n.id === nodeId);
+  const sourceNode = flowSpecState.nodes.find((n) => n.id === nodeId);
   if (!sourceNode) {
     message.error('未找到要克隆的节点！');
     return;
@@ -172,7 +172,7 @@ export const cloneNode = (nodeId: string) => {
   };
 
   // 添加克隆节点到状态中
-  flowContentState.nodes = flowContentState.nodes.concat(clonedNode);
+  flowSpecState.nodes = flowSpecState.nodes.concat(clonedNode);
 };
 
 // 容器节点收起时的尺寸常量
@@ -183,7 +183,7 @@ const DEFAULT_NODE_HEIGHT = 100;
 
 export const extendNode = (nodeId: string) => {
   // 使用 Map 优化查找性能
-  const nodeMap = new Map(flowContentState.nodes.map((node) => [node.id, node]));
+  const nodeMap = new Map(flowSpecState.nodes.map((node) => [node.id, node]));
   const currentNode = nodeMap.get(nodeId);
 
   if (!currentNode) {
@@ -203,11 +203,11 @@ export const extendNode = (nodeId: string) => {
   const newExpanded = !currentExpanded;
 
   // 优化：一次性获取所有需要更新的节点
-  const childrenNodeIds = getAllChildrenIds(nodeId, flowContentState.nodes);
+  const childrenNodeIds = getAllChildrenIds(nodeId, flowSpecState.nodes);
   const nodesToUpdate = new Set([nodeId, ...childrenNodeIds]);
 
   // 更新所有相关节点
-  flowContentState.nodes = flowContentState.nodes.map((node) => {
+  flowSpecState.nodes = flowSpecState.nodes.map((node) => {
     if (!nodesToUpdate.has(node.id)) {
       return node;
     }

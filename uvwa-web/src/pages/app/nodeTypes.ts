@@ -1,20 +1,20 @@
-import FlowCaseNode from '@/pages/app/components/app-flow/components/nodes/FlowCaseNode';
-import EditCaseAttribute from '@/pages/app/components/app-flow/components/nodes/FlowCaseNode/EditCaseAttribute';
-import FlowCodeNode from '@/pages/app/components/app-flow/components/nodes/FlowCodeNode';
-import EditCodeAttribute from '@/pages/app/components/app-flow/components/nodes/FlowCodeNode/EditCodeAttribute';
-import FlowEndNode from '@/pages/app/components/app-flow/components/nodes/FlowEndNode';
-import EditEndAttribute from '@/pages/app/components/app-flow/components/nodes/FlowEndNode/EditEndAttribute';
-import FlowGroupStartNode from '@/pages/app/components/app-flow/components/nodes/FlowGroupStartNode';
-import LoopBreakNode from '@/pages/app/components/app-flow/components/nodes/FlowLoopBreakNode';
-import LoopContinueNode from '@/pages/app/components/app-flow/components/nodes/FlowLoopContinueNode';
-import FlowLoopNode from '@/pages/app/components/app-flow/components/nodes/FlowLoopNode';
-import EditLoopAttribute from '@/pages/app/components/app-flow/components/nodes/FlowLoopNode/EditLoopAttribute';
-import FlowSqlNode from '@/pages/app/components/app-flow/components/nodes/FlowSqlNode';
-import EditSqlAttribute from '@/pages/app/components/app-flow/components/nodes/FlowSqlNode/EditSqlAttribute';
-import FlowSqlTransactionNode from '@/pages/app/components/app-flow/components/nodes/FlowSqlTransactionNode';
-import EditSqlTransactionAttribute from '@/pages/app/components/app-flow/components/nodes/FlowSqlTransactionNode/EditSqlTransactionAttribute';
-import FlowStartNode from '@/pages/app/components/app-flow/components/nodes/FlowStartNode';
-import EditStartAttribute from '@/pages/app/components/app-flow/components/nodes/FlowStartNode/EditStartAttribute';
+import FlowCaseNode from '@/pages/app/workflow/components/nodes/FlowCaseNode';
+import EditCaseAttribute from '@/pages/app/workflow/components/nodes/FlowCaseNode/EditCaseAttribute';
+import FlowCodeNode from '@/pages/app/workflow/components/nodes/FlowCodeNode';
+import EditCodeAttribute from '@/pages/app/workflow/components/nodes/FlowCodeNode/EditCodeAttribute';
+import FlowEndNode from '@/pages/app/workflow/components/nodes/FlowEndNode';
+import EditEndAttribute from '@/pages/app/workflow/components/nodes/FlowEndNode/EditEndAttribute';
+import FlowGroupStartNode from '@/pages/app/workflow/components/nodes/FlowGroupStartNode';
+import LoopBreakNode from '@/pages/app/workflow/components/nodes/FlowLoopBreakNode';
+import LoopContinueNode from '@/pages/app/workflow/components/nodes/FlowLoopContinueNode';
+import FlowLoopNode from '@/pages/app/workflow/components/nodes/FlowLoopNode';
+import EditLoopAttribute from '@/pages/app/workflow/components/nodes/FlowLoopNode/EditLoopAttribute';
+import FlowSqlNode from '@/pages/app/workflow/components/nodes/FlowSqlNode';
+import EditSqlAttribute from '@/pages/app/workflow/components/nodes/FlowSqlNode/EditSqlAttribute';
+import FlowSqlTransactionNode from '@/pages/app/workflow/components/nodes/FlowSqlTransactionNode';
+import EditSqlTransactionAttribute from '@/pages/app/workflow/components/nodes/FlowSqlTransactionNode/EditSqlTransactionAttribute';
+import FlowStartNode from '@/pages/app/workflow/components/nodes/FlowStartNode';
+import EditStartAttribute from '@/pages/app/workflow/components/nodes/FlowStartNode/EditStartAttribute';
 import {
   CaseNode,
   CodeNode,

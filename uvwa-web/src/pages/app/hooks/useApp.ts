@@ -1,7 +1,7 @@
 import { NodeDefineTypes } from '@/pages/app/nodeTypes';
 import { getAllChildrenIds, getNodeAbsolutePosition } from '@/pages/app/util';
 import {
-  flowContentState,
+  flowSpecState,
   flowEditorState,
   setEdges,
   setHoveredNodeId,
@@ -28,7 +28,7 @@ import { useSnapshot } from 'valtio';
 const deepClone = <T,>(v: T): T => (typeof structuredClone === 'function' ? structuredClone(v) : JSON.parse(JSON.stringify(v)));
 
 export const useApp = () => {
-  const appContentSnap = useSnapshot(flowContentState);
+  const appContentSnap = useSnapshot(flowSpecState);
   const appSnap = useSnapshot(flowEditorState);
   const { getIntersectingNodes } = useReactFlow();
   const [dropNodeIds, setDropNodeIds] = useState<string[] | null>(null);

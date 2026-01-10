@@ -129,10 +129,11 @@ const LoginPage: React.FC = () => {
   }, []);
 
   const handleSubmit = async (values: LoginFormData) => {
+    console.log("values", values);
     setLoading(true);
     try {
       // 模拟登录请求
-      await new Promise(resolve => setTimeout(resolve, 1200)); // 稍快的响应
+      // await new Promise(resolve => setTimeout(resolve, 1200)); // 稍快的响应
       message.success('登录成功！正在跳转...');
       // 跳转到首页
       navigate('/');

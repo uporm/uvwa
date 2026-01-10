@@ -1,22 +1,23 @@
 import { createWorkspace, getWorkspaces, setCurrentWorkspace } from '@/api/workspace.api'; // 工作空间状态管理
-import { AsyncState, createAsyncState, runAsync } from '@/utils/async-state';
-import { proxy } from 'valtio'; // 工作空间状态管理
+import { Q, makeQ, run } from '@/utils/q';
+import { proxy } from 'valtio';
+import { Workspace } from '@/types/workspace.types'; // 工作空间状态管理
 
 // 工作空间状态管理
 interface WorkspaceState {
-  asyncWorkspaces: AsyncState<WorkspaceType[]>;
+  workspaces: Q<Workspace[]>;
   currWorkspaceId: string | null;
 }
 
 export const workspaceState = proxy<WorkspaceState>({
-  asyncWorkspaces: createAsyncState(),
+  workspaces: makeQ(),
   currWorkspaceId: null,
 });
 
 
 // 获取工作空间列表
 export const fetchWorkspaces = async () => {
-  const res = await runAsync(workspaceState.asyncWorkspaces, getWorkspaces);
+  const res = await run(workspaceState.workspaces, getWorkspaces);
   if (res) {
     const current = res.find((w) => w.selected);
     if (current) {

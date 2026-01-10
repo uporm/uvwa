@@ -34,7 +34,7 @@ const redirectUrl = () => {
 axios.interceptors.request.use(
   function (config) {
     config.headers['x-token'] = getToken();
-    config.baseURL = '/api';
+    config.baseURL = '/uvwa/api';
     config.timeout = config.timeout || 60000;
     return config;
   },

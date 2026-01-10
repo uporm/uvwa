@@ -12,7 +12,7 @@ const { Header: AntHeader, Content } = AntLayout;
 
 const Layout: FC = () => {
   const location = useLocation();
-  const { asyncWorkspaces } = useSnapshot(workspaceState);
+  const { workspaces } = useSnapshot(workspaceState);
 
   // 初始化工作空间
   useEffect(() => {
@@ -23,7 +23,7 @@ const Layout: FC = () => {
   const isLoginPage = location.pathname === '/login';
 
   // 处理加载状态
-  if (!isLoginPage && (asyncWorkspaces.loading || !asyncWorkspaces.data)) {
+  if (!isLoginPage && (workspaces.loading || !workspaces.data)) {
     return (
       <Flex justify="center" align="center" style={{ height: '100vh', background: '#f0f2f5' }}>
         <Spin size="large" fullscreen={true} tip="正在加载工作空间..." />
@@ -32,7 +32,7 @@ const Layout: FC = () => {
   }
 
   // 如果没有工作空间，显示初始化页面
-  if (!isLoginPage && asyncWorkspaces.data && asyncWorkspaces.data.length === 0) {
+  if (!isLoginPage && workspaces.data && workspaces.data.length === 0) {
     return <WorkspaceInit />;
   }
 

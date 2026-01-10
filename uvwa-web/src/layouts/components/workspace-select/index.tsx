@@ -7,7 +7,7 @@ import React, { FC } from 'react';
 import { useSnapshot } from 'valtio';
 
 const WorkspaceSelect: FC = () => {
-  const { asyncWorkspaces, currWorkspaceId } = useSnapshot(workspaceState);
+  const { workspaces, currWorkspaceId } = useSnapshot(workspaceState);
 
   const handleWorkspaceChange = (workspaceId: string) => {
     switchWorkspace(workspaceId);
@@ -15,7 +15,7 @@ const WorkspaceSelect: FC = () => {
 
   // 确保options中包含当前选中的工作空间，即使在数据加载期间
   const selectOptions = React.useMemo(() => {
-    const options = asyncWorkspaces.data?.map((workspace: Workspace) => ({
+    const options = workspaces.data?.map((workspace: Workspace) => ({
       value: workspace.id,
       label: (
         <Flex gap={4}>
@@ -26,13 +26,13 @@ const WorkspaceSelect: FC = () => {
     }));
 
     return options;
-  }, [asyncWorkspaces, currWorkspaceId]);
+  }, [workspaces, currWorkspaceId]);
 
   return (
     <Select
       size="small"
       value={currWorkspaceId}
-      loading={asyncWorkspaces.loading}
+      loading={workspaces.loading}
       popupMatchSelectWidth={200}
       styles={{ root: { border: 'none' } }}
       className={styles.workspace}

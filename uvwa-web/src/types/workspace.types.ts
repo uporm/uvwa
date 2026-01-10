@@ -1,4 +1,6 @@
 // 工作空间类型定义
+import { FolderTypeEnum, TagTypeEnum } from '@/types/enum.types';
+
 export interface Workspace {
   id: string;
   name: string;
@@ -16,9 +18,10 @@ export interface WorkspaceFolder {
   children?: WorkspaceFolder[];
 }
 
-export interface CreateFolderReq {
+export interface CreateWorkspaceFolderReq {
   parentId?: string;
   name: string;
+  folderType: FolderTypeEnum;
 }
 
 // ===================== 标签相关类型定义 ====================
@@ -26,4 +29,5 @@ export interface CreateFolderReq {
 export interface WorkspaceTag {
   id: string;
   name: string;
+  type: TagTypeEnum;
 }

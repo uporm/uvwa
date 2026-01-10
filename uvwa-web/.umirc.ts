@@ -19,10 +19,10 @@ export default {
   },
   // 当 mock 关闭时使用的代理配置
   proxy: {
-    '/api': {
+    '/uvwa/api': {
       target: 'http://localhost:8080', //测试环境
       changeOrigin: true,
-      pathRewrite: { '^/api': '/' },
+      // pathRewrite: { '^/uvwa/api': '/' },
       onProxyReq: (proxyReq: any) => {
         proxyReq.setHeader('x-tenant-id', 1);
         proxyReq.setHeader('x-user-id', 0);

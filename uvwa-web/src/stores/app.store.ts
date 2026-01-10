@@ -2,7 +2,7 @@ import { cloneApp, createApp, deleteApp, listApps, updateApp, updateAppTag } fro
 import { createTag, deleteTag, listTags, updateTag } from '@/api/tag.api';
 import { App, CreateAppReq, ListAppReq } from '@/types/app.types';
 import { WorkspaceTag } from '@/types/workspace.types';
-import { AsyncState, createAsyncState, runAsync } from '@/utils/async-state';
+import { makeQ, Q, run } from '@/utils/q';
 import { proxy } from 'valtio';
 import { TagTypeEnum } from '@/types/enum.types';
 
@@ -15,33 +15,32 @@ interface EditAppParams {
 }
 
 export interface AppState {
-  apps: AsyncState<App[]>;
-  tags: AsyncState<WorkspaceTag[]>;
+  apps: Q<App[]>;
+  tags: Q<WorkspaceTag[]>;
   editApp: EditAppParams;
-  loading: AsyncState<void>;
+  loading: Q<void>;
   listAppReq: ListAppReq;
 }
 
 export const appState = proxy<AppState>({
   // 应用列表
-  apps: createAsyncState(),
+  apps: makeQ(),
   // 标签
-  tags: createAsyncState(),
+  tags: makeQ(),
   editApp: { open: false, operation: 'NEW' },
-  loading: createAsyncState(),
+  loading: makeQ(),
   listAppReq: {},
 });
 
 // 获取标签列表
 export const fetchTags = async () => {
-  await runAsync(appState.tags, listTags, TagTypeEnum.APP);
+  await run(appState.tags, listTags, TagTypeEnum.APP);
 };
 
 export const addTag = async (tag: WorkspaceTag) => {
-  await createTag(TagTypeEnum.APP, tag);
+  await createTag({ ...tag, type: TagTypeEnum.APP });
   await fetchTags();
 };
-
 
 export const setEditApp = (props: EditAppParams) => {
   appState.editApp = props;
@@ -55,7 +54,7 @@ export const editAppTag = async (appId: string, tagIds: string[]) => {
     console.log('更新应用标签', appState.apps.data, appId, tagIds);
     appState.apps.data![index] = { ...appState.apps.data![index], tagIds };
   }
-  await runAsync(appState.loading, updateAppTag, appId, tagIds);
+  await run(appState.loading, updateAppTag, appId, tagIds);
 };
 
 // 获取应用列表
@@ -64,9 +63,8 @@ export const fetchApps = async (params?: Partial<ListAppReq>) => {
   if (params) {
     appState.listAppReq = { ...appState.listAppReq, ...params };
   }
-  await runAsync(appState.apps, listApps, appState.listAppReq);
+  await run(appState.apps, listApps, appState.listAppReq);
 };
-
 
 // 创建新应用
 const addApp = async (data: App) => {
@@ -110,14 +108,13 @@ export const saveApp = (data: App) => {
   }
 };
 
-
 export const editTag = async (tag: WorkspaceTag) => {
-  await updateTag(TagTypeEnum.APP, tag.id, tag.name);
+  await updateTag(tag.id, tag.name);
   await fetchTags();
 };
 
 export const removeTag = async (tagId: string) => {
-  await deleteTag(TagTypeEnum.APP, tagId);
+  await deleteTag(tagId);
   await fetchTags();
   await fetchApps();
 };

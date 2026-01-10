@@ -1,5 +1,5 @@
 import IconFont from '@/components/icon-font';
-import AppFlow from '@/pages/app/components/app-flow';
+import AppFlow from '@/pages/app/workflow';
 import { appState, editAppTag, removeApp, setEditApp } from '@/stores/app.store';
 import { CopyOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, TagOutlined } from '@ant-design/icons';
 import { Button, Card, Dropdown, Flex, message, Modal, Select, Spin, Tag, theme, Typography } from 'antd';
